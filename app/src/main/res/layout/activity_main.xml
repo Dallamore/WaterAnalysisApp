@@ -1,64 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="p15188966.wateranalysisapp.MainActivity">
 
-    <EditText
-        android:id="@+id/firstNumEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="45dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="Enter a number"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/secondNumEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="Enter a number"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/firstNumEditText" />
+    <TextureView
+        android:id="@+id/texture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/btnCapture"
+        android:layout_alignParentTop="true"/>
 
     <Button
-        android:id="@+id/addBtn"
+        android:id="@+id/btnCapture"
         android:layout_width="wrap_content"
-        android:layout_height="44dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
-        android:text="Add"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/secondNumEditText" />
-
-    <TextView
-        android:id="@+id/resultTextView"
-        android:layout_width="198dp"
-        android:layout_height="68dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:textAlignment="center"
-        android:textSize="36sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addBtn"
-        tools:text="result" />
+        android:text="@string/takePicture" />
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

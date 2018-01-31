@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">WaterAnalysisApp</string>
+    <string name="takePicture">Take Picture</string>
 </resources>
