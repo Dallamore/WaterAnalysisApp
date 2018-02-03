@@ -3,7 +3,6 @@
 package p15188966.wateranalysisapp;
 
 import android.app.Activity;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -76,11 +76,25 @@ public class MainActivity extends Activity {
         private File createImageFile() throws IOException {
             // Create an image file name
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
-            File albumF = getAlbumDir();
-            File imageF = File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
-            return imageF;
+            String imageFileName = "JPEG_" + timeStamp + "_";
+            File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            File image = File.createTempFile(
+                    imageFileName,
+                    ".jpg",
+                    storageDir
+            );
+            mCurrentPhotoPath = image.getAbsolutePath();
+            return image;
         }
+
+//    private File createImageFile() throws IOException {
+//        // Create an image file name
+//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+//        String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
+//        File albumF = getAlbumDir();
+//        File imageF = File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
+//        return imageF;
+//    }
 
         private File setUpPhotoFile() throws IOException {
 
@@ -133,30 +147,48 @@ public class MainActivity extends Activity {
         }
 
         private void dispatchTakePictureIntent(int actionCode) {
-
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-            switch(actionCode) {
-                case ACTION_TAKE_PHOTO_B:
-                    File f = null;
-
-                    try {
-                        f = setUpPhotoFile();
-                        mCurrentPhotoPath = f.getAbsolutePath();
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        f = null;
-                        mCurrentPhotoPath = null;
-                    }
-                    break;
-
-                default:
-                    break;
-            } // switch
-
-            startActivityForResult(takePictureIntent, actionCode);
+            if(takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                //Create file where the photo should go
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                }catch (IOException ex){
+                    //Error occurred
+                    ex.printStackTrace();
+                    photoFile = null;
+                    mCurrentPhotoPath = null;
+                }
+                //Continue only if the file was successfully created
+                if (photoFile != null) {
+                    Uri photoUri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                    startActivityForResult(takePictureIntent, 1);
+                }
+            }
         }
+
+
+//    private void dispatchTakePictureIntent(int actionCode) {
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        switch(actionCode) {
+//            case ACTION_TAKE_PHOTO_B:
+//                File f = null;
+//                try {
+//                    f = setUpPhotoFile();
+//                    mCurrentPhotoPath = f.getAbsolutePath();
+////                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    f = null;
+//                    mCurrentPhotoPath = null;
+//                }
+//                break;
+//            default:
+//                break;
+//        }
+//        startActivityForResult(takePictureIntent, actionCode);
+//    }
 
         private void handleSmallCameraPhoto(Intent intent) {
             Bundle extras = intent.getExtras();
@@ -278,5 +310,4 @@ public class MainActivity extends Activity {
                 btn.setClickable(false);
             }
         }
-
 }
