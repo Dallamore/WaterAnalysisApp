@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">WaterAnalysisApp</string>
-    <string name="btn1">Btn-S</string>
-    <string name="btn2">Btn-!S</string>
+    <string name="btnS">Btn-S</string>
+    <string name="btnB">Btn-B</string>
 
 
     <string name="cannot">plz no</string>

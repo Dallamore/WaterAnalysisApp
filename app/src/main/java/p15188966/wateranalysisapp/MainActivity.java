@@ -2,12 +2,7 @@
 
 package p15188966.wateranalysisapp;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
+import android.app.Activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +11,6 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -24,7 +18,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.VideoView;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends Activity {
 
@@ -167,7 +166,6 @@ public class MainActivity extends Activity {
         }
 
         private void handleBigCameraPhoto() {
-
             if (mCurrentPhotoPath != null) {
                 setPic();
                 galleryAddPic();
@@ -176,7 +174,7 @@ public class MainActivity extends Activity {
 
         }
 
-        Button.OnClickListener mTakePicOnClickListener =
+        Button.OnClickListener mTakePicOnClickListenerB =
                 new Button.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -184,7 +182,7 @@ public class MainActivity extends Activity {
                     }
                 };
 
-        Button.OnClickListener mTakePicSOnClickListener =
+        Button.OnClickListener mTakePicOnClickListenerS =
                 new Button.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -198,20 +196,20 @@ public class MainActivity extends Activity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
 
-            mImageView = (ImageView) findViewById(R.id.imageView1);
+            mImageView = findViewById(R.id.imageView1);
             mImageBitmap = null;
 
-            Button picBtn = (Button) findViewById(R.id.btnIntend);
+            Button picBtnB = findViewById(R.id.btnIntendB);
             setBtnListenerOrDisable(
-                    picBtn,
-                    mTakePicOnClickListener,
+                    picBtnB,
+                    mTakePicOnClickListenerB,
                     MediaStore.ACTION_IMAGE_CAPTURE
             );
 
-            Button picSBtn = (Button) findViewById(R.id.btnIntendS);
+            Button picBtnS = findViewById(R.id.btnIntendS);
             setBtnListenerOrDisable(
-                    picSBtn,
-                    mTakePicSOnClickListener,
+                    picBtnS,
+                    mTakePicOnClickListenerS,
                     MediaStore.ACTION_IMAGE_CAPTURE
             );
 
