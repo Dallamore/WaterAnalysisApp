@@ -1,14 +1,11 @@
 package p15188966.wateranalysisapp;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.media.ExifInterface;
+import android.support.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,40 +17,29 @@ import android.widget.ImageView;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 public class MainActivity extends Activity {
-
-    private static final String BITMAP_STORAGE_KEY = "viewbitmap";
-    private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imageviewvisibility";
     private ImageView mImageView;
-    private Bitmap mImageBitmap;
     private String mCurrentPhotoPath;
 
     private File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String imageFileName = "JPEG_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-//        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-
-        System.out.println("boobies "+storageDir.toString());
         File image = File.createTempFile(imageFileName,".jpg",storageDir);
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
 
     private Bitmap rotateImage(Bitmap bitmap){
-        ExifInterface exifInterface = null;
+        ExifInterface exifInterface;
+        int orientation = 0;
         try{
             exifInterface = new ExifInterface(mCurrentPhotoPath);
+            orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
         } catch (IOException e){
             e.printStackTrace();
         }
-        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
         Matrix matrix = new Matrix();
         switch (orientation){
             case ExifInterface.ORIENTATION_ROTATE_90:
@@ -65,13 +51,10 @@ public class MainActivity extends Activity {
             default:
                 break;
         }
-        Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
-        return rotatedBitmap;
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     private void setPic() {
-
 		/* There isn't enough memory to open up more than a couple camera photos */
 		/* So pre-scale the target bitmap into which the file is decoded */
 
@@ -100,7 +83,6 @@ public class MainActivity extends Activity {
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
 
 		/* Associate the Bitmap to the ImageView */
-
         mImageView.setImageBitmap(rotateImage(bitmap));
         mImageView.setVisibility(View.VISIBLE);
     }
@@ -127,84 +109,30 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void handleBigCameraPhoto() {
-        if (mCurrentPhotoPath != null) {
-            setPic();
-            mCurrentPhotoPath = null;
+    Button.OnClickListener captureBtnOnclickListener = new Button.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            dispatchTakePictureIntent();
         }
-    }
-
-    Button.OnClickListener mTakePicOnClickListenerB =
-            new Button.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dispatchTakePictureIntent();
-                }
-            };
+    };
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mImageView = findViewById(R.id.capturePhotoImageView);
-        mImageBitmap = null;
-
         Button picBtnB = findViewById(R.id.btnCapture);
-        setBtnListenerOrDisable(
-                picBtnB,
-                mTakePicOnClickListenerB,
-                MediaStore.ACTION_IMAGE_CAPTURE
-        );
+        picBtnB.setOnClickListener(captureBtnOnclickListener);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            handleBigCameraPhoto();
-        }
-    }
-
-    // Some lifecycle callbacks so that the image can survive orientation change
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(BITMAP_STORAGE_KEY, mImageBitmap);
-        outState.putBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY, (mImageBitmap != null) );
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mImageBitmap = savedInstanceState.getParcelable(BITMAP_STORAGE_KEY);
-        mImageView.setImageBitmap(mImageBitmap);
-        mImageView.setVisibility(
-                savedInstanceState.getBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY) ?
-                        ImageView.VISIBLE : ImageView.INVISIBLE
-        );
-    }
-
-    public static boolean isIntentAvailable(Context context, String action) {
-        final PackageManager packageManager = context.getPackageManager();
-        final Intent intent = new Intent(action);
-        List<ResolveInfo> list =
-                packageManager.queryIntentActivities(intent,
-                        PackageManager.MATCH_DEFAULT_ONLY);
-        return list.size() > 0;
-    }
-
-    private void setBtnListenerOrDisable(
-            Button btn,
-            Button.OnClickListener onClickListener,
-            String intentName
-    ) {
-        if (isIntentAvailable(this, intentName)) {
-            btn.setOnClickListener(onClickListener);
-        } else {
-            btn.setText(
-                    getText(R.string.cannot).toString());
-            btn.setClickable(false);
+            if (mCurrentPhotoPath != null) {
+                setPic();
+                mCurrentPhotoPath = null;
+            }
         }
     }
 }
