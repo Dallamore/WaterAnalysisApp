@@ -1,19 +1,25 @@
+//Android 7.0 API 24
+
 package p15188966.wateranalysisapp;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
-import android.support.media.ExifInterface;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.media.ExifInterface;
 import android.support.v4.content.FileProvider;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,6 +122,27 @@ public class MainActivity extends Activity {
         }
     };
 
+
+
+    ImageView.OnTouchListener mainViewTouchListener = new ImageView.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event){
+            Bitmap bitmap = ((BitmapDrawable)mImageView.getDrawable()).getBitmap();
+            int x = (int)event.getX();
+            int y = (int)event.getY();
+            int pixel = bitmap.getPixel(x,y);
+
+            int redValue = Color.red(pixel);
+            int blueValue = Color.blue(pixel);
+            int greenValue = Color.green(pixel);
+
+            TextView box = findViewById(R.id.colourReturnBox);
+            String colourBoxString = "R = " + redValue + "\nG = " + greenValue + "\nB = " + blueValue;
+            box.setText(colourBoxString);
+            return false;
+        }
+    };
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -124,6 +151,7 @@ public class MainActivity extends Activity {
         mImageView = findViewById(R.id.capturePhotoImageView);
         Button picBtnB = findViewById(R.id.btnCapture);
         picBtnB.setOnClickListener(captureBtnOnclickListener);
+        mImageView.setOnTouchListener(mainViewTouchListener);
     }
 
     @Override
