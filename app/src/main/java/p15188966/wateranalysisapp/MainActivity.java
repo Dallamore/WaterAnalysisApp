@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,6 +26,7 @@ import java.io.IOException;
 public class MainActivity extends Activity {
     private ImageView mImageView;
     private String mCurrentPhotoPath;
+    private Bitmap mPhoto;
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -83,14 +83,16 @@ public class MainActivity extends Activity {
 
 		/* Set bitmap options to scale the image decode target */
         bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
+//        bmOptions.inSampleSize = scaleFactor;
 
 		/* Decode the JPEG file into a Bitmap */
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
 
 		/* Associate the Bitmap to the ImageView */
-        mImageView.setImageBitmap(rotateImage(bitmap));
+		mPhoto = rotateImage(bitmap);
+        mImageView.setImageBitmap(mPhoto);
         mImageView.setVisibility(View.VISIBLE);
+        mImageView.setOnTouchListener(mainViewTouchListener);
     }
 
     private void dispatchTakePictureIntent() {
@@ -122,23 +124,29 @@ public class MainActivity extends Activity {
         }
     };
 
-
-
     ImageView.OnTouchListener mainViewTouchListener = new ImageView.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event){
-            Bitmap bitmap = ((BitmapDrawable)mImageView.getDrawable()).getBitmap();
-            int x = (int)event.getX();
-            int y = (int)event.getY();
-            int pixel = bitmap.getPixel(x,y);
+            Bitmap bitmap = mPhoto;
+//            int x = (int)event.getX();
+//            int y = (int)event.getY();
 
+            Matrix inverse = new Matrix();
+            v.getMatrix().invert(inverse);
+            float[] touchPoint = new float[] {event.getX(), event.getY()};
+            inverse.mapPoints(touchPoint);
+            int x = Integer.valueOf((int)touchPoint[0]);
+            int y = Integer.valueOf((int)touchPoint[1]);
+
+            int pixel = bitmap.getPixel(x,y);
             int redValue = Color.red(pixel);
             int blueValue = Color.blue(pixel);
             int greenValue = Color.green(pixel);
-
-            TextView box = findViewById(R.id.colourReturnBox);
+            TextView colourTextBox = findViewById(R.id.colourTextBox);
+            TextView colourSampleBox = findViewById(R.id.colourSampleBox);
             String colourBoxString = "R = " + redValue + "\nG = " + greenValue + "\nB = " + blueValue;
-            box.setText(colourBoxString);
+            colourTextBox.setText(colourBoxString);
+            colourSampleBox.setBackgroundColor(Color.rgb(redValue, greenValue, blueValue));
             return false;
         }
     };
@@ -151,7 +159,6 @@ public class MainActivity extends Activity {
         mImageView = findViewById(R.id.capturePhotoImageView);
         Button picBtnB = findViewById(R.id.btnCapture);
         picBtnB.setOnClickListener(captureBtnOnclickListener);
-        mImageView.setOnTouchListener(mainViewTouchListener);
     }
 
     @Override
