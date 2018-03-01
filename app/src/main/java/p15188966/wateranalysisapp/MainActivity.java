@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -83,7 +85,7 @@ public class MainActivity extends Activity {
 
 		/* Set bitmap options to scale the image decode target */
         bmOptions.inJustDecodeBounds = false;
-//        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inSampleSize = scaleFactor;
 
 		/* Decode the JPEG file into a Bitmap */
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
@@ -125,30 +127,99 @@ public class MainActivity extends Activity {
     };
 
     ImageView.OnTouchListener mainViewTouchListener = new ImageView.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event){
-            Bitmap bitmap = mPhoto;
+//        @Override
+//        public boolean onTouch(View v, MotionEvent event){
+//
+////            float HeightRatio = (float)mPhoto.getHeight() / (float)mImageView.getHeight();
+////            float WidthRatio = (float)mPhoto.getWidth() / (float)mImageView.getWidth();
 //            int x = (int)event.getX();
 //            int y = (int)event.getY();
+//
+////            Matrix inverse = new Matrix();
+////            mImageView.getImageMatrix().invert(inverse);
+////            float[] touchPoint = new float[] {event.getX(), event.getY()};
+////            inverse.mapPoints(touchPoint);
+////            int x = Integer.valueOf((int)touchPoint[0]);
+////            int y = Integer.valueOf((int)touchPoint[1]);
+////
+////            int XonImage = x * (int) WidthRatio;
+////            int YonImage = y * (int) HeightRatio;
+//
+//            int pixel = ((BitmapDrawable)mImageView.getDrawable()).getBitmap().getPixel(x,y);
+////            int pixel = bitmap.getPixel(XonImage,YonImage);
+//            int redValue = Color.red(pixel);
+//            int blueValue = Color.blue(pixel);
+//            int greenValue = Color.green(pixel);
+//            TextView colourTextBox = findViewById(R.id.colourTextBox);
+//            TextView colourSampleBox = findViewById(R.id.colourSampleBox);
+//            String colourBoxString = "R = " + redValue + "\nG = " + greenValue + "\nB = " + blueValue;
+//            colourTextBox.setText(colourBoxString);
+//            colourSampleBox.setBackgroundColor(Color.rgb(redValue, greenValue, blueValue));
+//
+//            return false;
+//        }
 
-            Matrix inverse = new Matrix();
-            v.getMatrix().invert(inverse);
-            float[] touchPoint = new float[] {event.getX(), event.getY()};
-            inverse.mapPoints(touchPoint);
-            int x = Integer.valueOf((int)touchPoint[0]);
-            int y = Integer.valueOf((int)touchPoint[1]);
+        @Override
+        public boolean onTouch(View view, MotionEvent event) {
 
-            int pixel = bitmap.getPixel(x,y);
-            int redValue = Color.red(pixel);
-            int blueValue = Color.blue(pixel);
-            int greenValue = Color.green(pixel);
+            float eventX = event.getX();
+            float eventY = event.getY();
+            float[] eventXY = new float[] {eventX, eventY};
+
+            Matrix invertMatrix = new Matrix();
+            ((ImageView)view).getImageMatrix().invert(invertMatrix);
+
+            invertMatrix.mapPoints(eventXY);
+            int x = Integer.valueOf((int)eventXY[0]);
+            int y = Integer.valueOf((int)eventXY[1]);
+
+//            touchedXY.setText(
+//                    "touched position: "
+//                            + String.valueOf(eventX) + " / "
+//                            + String.valueOf(eventY));
+//            invertedXY.setText(
+//                    "touched position: "
+//                            + String.valueOf(x) + " / "
+//                            + String.valueOf(y));
+
+            Drawable imgDrawable = ((ImageView)view).getDrawable();
+            Bitmap bitmap = ((BitmapDrawable)imgDrawable).getBitmap();
+
+//            imgSize.setText(
+//                    "drawable size: "
+//                            + String.valueOf(bitmap.getWidth()) + " / "
+//                            + String.valueOf(bitmap.getHeight()));
+
+            //Limit x, y range within bitmap
+            if(x < 0){
+                x = 0;
+            }else if(x > bitmap.getWidth()-1){
+                x = bitmap.getWidth()-1;
+            }
+
+            if(y < 0){
+                y = 0;
+            }else if(y > bitmap.getHeight()-1){
+                y = bitmap.getHeight()-1;
+            }
+
+            int touchedRGB = bitmap.getPixel(x, y);
+
+//            colorRGB.setText("touched color: " + "#" + Integer.toHexString(touchedRGB));
+//            colorRGB.setTextColor(touchedRGB);
+
+            int redValue = Color.red(touchedRGB);
+            int blueValue = Color.blue(touchedRGB);
+            int greenValue = Color.green(touchedRGB);
             TextView colourTextBox = findViewById(R.id.colourTextBox);
             TextView colourSampleBox = findViewById(R.id.colourSampleBox);
             String colourBoxString = "R = " + redValue + "\nG = " + greenValue + "\nB = " + blueValue;
             colourTextBox.setText(colourBoxString);
             colourSampleBox.setBackgroundColor(Color.rgb(redValue, greenValue, blueValue));
-            return false;
+
+            return true;
         }
+
     };
 
     /** Called when the activity is first created. */
