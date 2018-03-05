@@ -1,15 +1,9 @@
 <resources>
     <string name="app_name">WaterAnalysisApp</string>
     <string name="btnCapture">Capture Photo</string>
-    <string name="cannot">plz no button error</string>
-    <string name="conDesc">Content here</string>
-    <string name="camera_access_required">Camera access is required to display the camera preview.</string>
-    <string name="ok">OK</string>
-    <string name="camera_unavailable"><b>Camera could not be opened.</b>\nThis occurs when the camera is not available (for example it is already in use) or if the system has denied access (for example when camera access has been disabled).</string>
-    <string name="camera_permission_available">Camera permission is available. Starting preview.</string>
-    <string name="camera_permission_granted">Camera permission was granted. Starting preview.</string>
-    <string name="camera_permission_nope">Camera permission request was denied.</string>
+    <string name="camera_permission_denied">Camera permission request was denied.</string>
+    <string name="LogoImageView">Logo</string>
+    <string name="pastReadingsButton">Past Readings</string>
 
-    <string name="global_nope">No thanks</string>
-
+    <string name="notReadyYet">Not implemented yet</string>
 </resources>

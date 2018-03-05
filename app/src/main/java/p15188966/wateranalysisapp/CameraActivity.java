@@ -1,5 +1,4 @@
 //Android 7.0 API 24
-//TODO ask for permissions on first install
 
 package p15188966.wateranalysisapp;
 
@@ -31,12 +30,19 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.IOException;
 
-public class MainActivity extends Activity {
+public class CameraActivity extends Activity {
     private ImageView mImageView;
     private String mCurrentPhotoPath;
-    private Bitmap mPhoto;
-    private static final int PERMISSION_REQUEST_CAMERA = 0;
-    private boolean cameraPerm;
+
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.cameraactivity);
+        mImageView = findViewById(R.id.capturePhotoImageView);
+        Button picBtnB = findViewById(R.id.btnCapture);
+        picBtnB.setOnClickListener(captureBtnOnclickListener);
+    }
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -99,13 +105,13 @@ public class MainActivity extends Activity {
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
 
 		/* Associate the Bitmap to the ImageView */
-		mPhoto = rotateImage(bitmap);
+		Bitmap mPhoto = rotateImage(bitmap);
         mImageView.setImageBitmap(mPhoto);
         mImageView.setVisibility(View.VISIBLE);
         mImageView.setOnTouchListener(mainViewTouchListener);
     }
 
-    private void dispatchTakePictureIntent() {
+    private void startCamera() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if(takePictureIntent.resolveActivity(getPackageManager()) != null) {
             //Create file where the photo should go
@@ -131,15 +137,6 @@ public class MainActivity extends Activity {
         @Override
         public void onClick(View v) {
             requestCameraPermission();
-            if (cameraPerm){
-                dispatchTakePictureIntent();
-            }
-            else{
-                requestCameraPermission();
-//                Snackbar.make(findViewById(R.id.capturePhotoImageView), R.string.global_nope,
-//                        Snackbar.LENGTH_SHORT)
-//                        .show();
-            }
         }
     };
 
@@ -155,8 +152,8 @@ public class MainActivity extends Activity {
             ((ImageView)view).getImageMatrix().invert(invertMatrix);
 
             invertMatrix.mapPoints(eventXY);
-            int x = Integer.valueOf((int)eventXY[0]);
-            int y = Integer.valueOf((int)eventXY[1]);
+            int x = (int)eventXY[0];
+            int y = (int)eventXY[1];
 
             Drawable imgDrawable = ((ImageView)view).getDrawable();
             Bitmap bitmap = ((BitmapDrawable)imgDrawable).getBitmap();
@@ -190,18 +187,6 @@ public class MainActivity extends Activity {
 
     };
 
-
-
-    /** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        mImageView = findViewById(R.id.capturePhotoImageView);
-        Button picBtnB = findViewById(R.id.btnCapture);
-        picBtnB.setOnClickListener(captureBtnOnclickListener);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -212,70 +197,24 @@ public class MainActivity extends Activity {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PERMISSION_REQUEST_CAMERA) {
+        if (requestCode == 0) {
             // Request for camera permission.
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission has been granted. Start camera preview Activity.
-                Snackbar.make(findViewById(R.id.capturePhotoImageView), R.string.camera_permission_granted,
-                        Snackbar.LENGTH_SHORT)
-                        .show();
-                cameraPerm = true;
+                startCamera();
             } else {
                 // Permission request was denied.
-                Snackbar.make(findViewById(R.id.capturePhotoImageView), R.string.camera_permission_nope,
+                Snackbar.make(findViewById(R.id.capturePhotoImageView), R.string.camera_permission_denied,
                         Snackbar.LENGTH_SHORT)
                         .show();
-                cameraPerm = false;
             }
         }
     }
 
     private void requestCameraPermission() {
-        // Permission has not been granted and must be requested.
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.CAMERA)) {
-            // Provide an additional rationale to the user if the permission was not granted
-            // and the user would benefit from additional context for the use of the permission.
-            // Display a SnackBar with cda button to request the missing permission.
-
-
-            Snackbar.make(findViewById(R.id.capturePhotoImageView), R.string.camera_access_required,
-                    Snackbar.LENGTH_INDEFINITE).setAction(R.string.ok, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Request the permission
-                    ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{Manifest.permission.CAMERA},
-                            PERMISSION_REQUEST_CAMERA);
-                }
-            }).show();
-
-        } else {
-            Snackbar.make(findViewById(R.id.capturePhotoImageView), R.string.camera_unavailable, Snackbar.LENGTH_SHORT).show();
-            // Request the permission. The result will be received in onRequestPermissionResult().
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
-        }
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.CAMERA}, 0);
     }
-
-
-
 }
