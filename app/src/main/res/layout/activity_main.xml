@@ -18,8 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-
     <Button
         android:id="@+id/btnCapture"
         android:layout_width="wrap_content"
@@ -39,7 +37,7 @@
         android:shadowColor="@android:color/black"
         android:shadowDx="0"
         android:shadowDy="0"
-        android:shadowRadius="5"
+        android:shadowRadius="7"
         android:singleLine="false"
         android:textColor="@android:color/white"
         android:textSize="18sp"

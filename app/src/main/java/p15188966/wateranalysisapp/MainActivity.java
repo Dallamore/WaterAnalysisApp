@@ -1,9 +1,12 @@
 //Android 7.0 API 24
+//TODO ask for permissions on first install
 
 package p15188966.wateranalysisapp;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -14,7 +17,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.media.ExifInterface;
+import android.support.v13.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,6 +35,8 @@ public class MainActivity extends Activity {
     private ImageView mImageView;
     private String mCurrentPhotoPath;
     private Bitmap mPhoto;
+    private static final int PERMISSION_REQUEST_CAMERA = 0;
+    private boolean cameraPerm;
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -122,43 +130,20 @@ public class MainActivity extends Activity {
     Button.OnClickListener captureBtnOnclickListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            dispatchTakePictureIntent();
+            requestCameraPermission();
+            if (cameraPerm){
+                dispatchTakePictureIntent();
+            }
+            else{
+                requestCameraPermission();
+//                Snackbar.make(findViewById(R.id.capturePhotoImageView), R.string.global_nope,
+//                        Snackbar.LENGTH_SHORT)
+//                        .show();
+            }
         }
     };
 
     ImageView.OnTouchListener mainViewTouchListener = new ImageView.OnTouchListener() {
-//        @Override
-//        public boolean onTouch(View v, MotionEvent event){
-//
-////            float HeightRatio = (float)mPhoto.getHeight() / (float)mImageView.getHeight();
-////            float WidthRatio = (float)mPhoto.getWidth() / (float)mImageView.getWidth();
-//            int x = (int)event.getX();
-//            int y = (int)event.getY();
-//
-////            Matrix inverse = new Matrix();
-////            mImageView.getImageMatrix().invert(inverse);
-////            float[] touchPoint = new float[] {event.getX(), event.getY()};
-////            inverse.mapPoints(touchPoint);
-////            int x = Integer.valueOf((int)touchPoint[0]);
-////            int y = Integer.valueOf((int)touchPoint[1]);
-////
-////            int XonImage = x * (int) WidthRatio;
-////            int YonImage = y * (int) HeightRatio;
-//
-//            int pixel = ((BitmapDrawable)mImageView.getDrawable()).getBitmap().getPixel(x,y);
-////            int pixel = bitmap.getPixel(XonImage,YonImage);
-//            int redValue = Color.red(pixel);
-//            int blueValue = Color.blue(pixel);
-//            int greenValue = Color.green(pixel);
-//            TextView colourTextBox = findViewById(R.id.colourTextBox);
-//            TextView colourSampleBox = findViewById(R.id.colourSampleBox);
-//            String colourBoxString = "R = " + redValue + "\nG = " + greenValue + "\nB = " + blueValue;
-//            colourTextBox.setText(colourBoxString);
-//            colourSampleBox.setBackgroundColor(Color.rgb(redValue, greenValue, blueValue));
-//
-//            return false;
-//        }
-
         @Override
         public boolean onTouch(View view, MotionEvent event) {
 
@@ -173,22 +158,8 @@ public class MainActivity extends Activity {
             int x = Integer.valueOf((int)eventXY[0]);
             int y = Integer.valueOf((int)eventXY[1]);
 
-//            touchedXY.setText(
-//                    "touched position: "
-//                            + String.valueOf(eventX) + " / "
-//                            + String.valueOf(eventY));
-//            invertedXY.setText(
-//                    "touched position: "
-//                            + String.valueOf(x) + " / "
-//                            + String.valueOf(y));
-
             Drawable imgDrawable = ((ImageView)view).getDrawable();
             Bitmap bitmap = ((BitmapDrawable)imgDrawable).getBitmap();
-
-//            imgSize.setText(
-//                    "drawable size: "
-//                            + String.valueOf(bitmap.getWidth()) + " / "
-//                            + String.valueOf(bitmap.getHeight()));
 
             //Limit x, y range within bitmap
             if(x < 0){
@@ -205,9 +176,6 @@ public class MainActivity extends Activity {
 
             int touchedRGB = bitmap.getPixel(x, y);
 
-//            colorRGB.setText("touched color: " + "#" + Integer.toHexString(touchedRGB));
-//            colorRGB.setTextColor(touchedRGB);
-
             int redValue = Color.red(touchedRGB);
             int blueValue = Color.blue(touchedRGB);
             int greenValue = Color.green(touchedRGB);
@@ -221,6 +189,8 @@ public class MainActivity extends Activity {
         }
 
     };
+
+
 
     /** Called when the activity is first created. */
     @Override
@@ -241,4 +211,71 @@ public class MainActivity extends Activity {
             }
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CAMERA) {
+            // Request for camera permission.
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission has been granted. Start camera preview Activity.
+                Snackbar.make(findViewById(R.id.capturePhotoImageView), R.string.camera_permission_granted,
+                        Snackbar.LENGTH_SHORT)
+                        .show();
+                cameraPerm = true;
+            } else {
+                // Permission request was denied.
+                Snackbar.make(findViewById(R.id.capturePhotoImageView), R.string.camera_permission_nope,
+                        Snackbar.LENGTH_SHORT)
+                        .show();
+                cameraPerm = false;
+            }
+        }
+    }
+
+    private void requestCameraPermission() {
+        // Permission has not been granted and must be requested.
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.CAMERA)) {
+            // Provide an additional rationale to the user if the permission was not granted
+            // and the user would benefit from additional context for the use of the permission.
+            // Display a SnackBar with cda button to request the missing permission.
+
+
+            Snackbar.make(findViewById(R.id.capturePhotoImageView), R.string.camera_access_required,
+                    Snackbar.LENGTH_INDEFINITE).setAction(R.string.ok, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Request the permission
+                    ActivityCompat.requestPermissions(MainActivity.this,
+                            new String[]{Manifest.permission.CAMERA},
+                            PERMISSION_REQUEST_CAMERA);
+                }
+            }).show();
+
+        } else {
+            Snackbar.make(findViewById(R.id.capturePhotoImageView), R.string.camera_unavailable, Snackbar.LENGTH_SHORT).show();
+            // Request the permission. The result will be received in onRequestPermissionResult().
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
+        }
+    }
+
+
+
 }
