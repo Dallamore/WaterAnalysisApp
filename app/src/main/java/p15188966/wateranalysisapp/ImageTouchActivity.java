@@ -3,6 +3,7 @@
 package p15188966.wateranalysisapp;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -22,21 +23,28 @@ import android.support.v13.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
-public class ImageTouchActivity extends AppCompatActivity{
+public class ImageTouchActivity extends AppCompatActivity {
     private ImageView mImageView;
     private String mCurrentPhotoPath;
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,8 +69,8 @@ public class ImageTouchActivity extends AppCompatActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_save:
-                // User chose the "Settings" item, show the app settings UI...
+            case R.id.action_analyse:
+                writeToFile("Booonnnnjjooouuurrrrrr", this);
                 return true;
 
             case R.id.new_capture:
@@ -81,22 +89,22 @@ public class ImageTouchActivity extends AppCompatActivity{
         // Create an image file name
         String imageFileName = "JPEG_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(imageFileName,".jpg",storageDir);
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
 
-    private Bitmap rotateImage(Bitmap bitmap){
+    private Bitmap rotateImage(Bitmap bitmap) {
         ExifInterface exifInterface;
         int orientation = 0;
-        try{
+        try {
             exifInterface = new ExifInterface(mCurrentPhotoPath);
             orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         Matrix matrix = new Matrix();
-        switch (orientation){
+        switch (orientation) {
             case ExifInterface.ORIENTATION_ROTATE_90:
                 matrix.setRotate(90);
                 break;
@@ -127,7 +135,7 @@ public class ImageTouchActivity extends AppCompatActivity{
 		/* Figure out which way needs to be reduced less */
         int scaleFactor = 1;
         if ((targetW > 0) || (targetH > 0)) {
-            scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+            scaleFactor = Math.min(photoW / targetW, photoH / targetH);
         }
 
 		/* Set bitmap options to scale the image decode target */
@@ -138,7 +146,7 @@ public class ImageTouchActivity extends AppCompatActivity{
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
 
 		/* Associate the Bitmap to the ImageView */
-		Bitmap mPhoto = rotateImage(bitmap);
+        Bitmap mPhoto = rotateImage(bitmap);
         mImageView.setImageBitmap(mPhoto);
         mImageView.setVisibility(View.VISIBLE);
         mImageView.setOnTouchListener(mainViewTouchListener);
@@ -146,12 +154,12 @@ public class ImageTouchActivity extends AppCompatActivity{
 
     private void startCamera() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if(takePictureIntent.resolveActivity(getPackageManager()) != null) {
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             //Create file where the photo should go
             File photoFile;
             try {
                 photoFile = createImageFile();
-            }catch (IOException ex){
+            } catch (IOException ex) {
                 //Error occurred
                 ex.printStackTrace();
                 photoFile = null;
@@ -179,29 +187,29 @@ public class ImageTouchActivity extends AppCompatActivity{
 
             float eventX = event.getX();
             float eventY = event.getY();
-            float[] eventXY = new float[] {eventX, eventY};
+            float[] eventXY = new float[]{eventX, eventY};
 
             Matrix invertMatrix = new Matrix();
-            ((ImageView)view).getImageMatrix().invert(invertMatrix);
+            ((ImageView) view).getImageMatrix().invert(invertMatrix);
 
             invertMatrix.mapPoints(eventXY);
-            int x = (int)eventXY[0];
-            int y = (int)eventXY[1];
+            int x = (int) eventXY[0];
+            int y = (int) eventXY[1];
 
-            Drawable imgDrawable = ((ImageView)view).getDrawable();
-            Bitmap bitmap = ((BitmapDrawable)imgDrawable).getBitmap();
+            Drawable imgDrawable = ((ImageView) view).getDrawable();
+            Bitmap bitmap = ((BitmapDrawable) imgDrawable).getBitmap();
 
             //Limit x, y range within bitmap
-            if(x < 0){
+            if (x < 0) {
                 x = 0;
-            }else if(x > bitmap.getWidth()-1){
-                x = bitmap.getWidth()-1;
+            } else if (x > bitmap.getWidth() - 1) {
+                x = bitmap.getWidth() - 1;
             }
 
-            if(y < 0){
+            if (y < 0) {
                 y = 0;
-            }else if(y > bitmap.getHeight()-1){
-                y = bitmap.getHeight()-1;
+            } else if (y > bitmap.getHeight() - 1) {
+                y = bitmap.getHeight() - 1;
             }
 
             int touchedRGB = bitmap.getPixel(x, y);
@@ -250,4 +258,60 @@ public class ImageTouchActivity extends AppCompatActivity{
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.CAMERA}, 0);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private void writeToFile(String data, Context context) {
+        boolean isFilePresent = isFilePresent(this, "waa_data.json");
+        if(isFilePresent) {
+            try {
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("waa_data.json", Context.MODE_PRIVATE));
+                outputStreamWriter.write(data);
+                outputStreamWriter.close();
+                Toast.makeText(context, "Successfully analysed", Toast.LENGTH_SHORT).show();
+
+            }
+            catch (IOException e) {
+                Log.e("Exception", "File write failed: " + e.toString());
+            }
+        } else {
+            create(this, "waa_data.json",data);
+        }
+    }
+
+    public boolean isFilePresent(Context context, String fileName) {
+        String path = context.getFilesDir().getAbsolutePath() + "/" + fileName;
+        File file = new File(path);
+        return file.exists();
+    }
+
+    private boolean create(Context context, String fileName, String jsonString){
+        try {
+            FileOutputStream fos = openFileOutput(fileName,Context.MODE_PRIVATE);
+            if (jsonString != null) {
+                fos.write(jsonString.getBytes());
+            }
+            fos.close();
+            return true;
+        } catch (FileNotFoundException fileNotFound) {
+            return false;
+        } catch (IOException ioException) {
+            return false;
+        }
+
+    }
+
+
+
 }

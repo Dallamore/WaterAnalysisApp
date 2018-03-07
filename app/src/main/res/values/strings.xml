@@ -4,8 +4,8 @@
     <string name="camera_permission_denied">Camera permission request was denied.</string>
     <string name="LogoImageView">Logo</string>
     <string name="pastReadingsButton">Past Readings</string>
-
     <string name="notReadyYet">Not implemented yet</string>
     <string name="action_new_capture">New Capture</string>
-    <string name="action_save">Save</string>
+    <string name="action_save">Analyse</string>
+    <string name="pastBlockText">Past Nerd Words</string>
 </resources>
