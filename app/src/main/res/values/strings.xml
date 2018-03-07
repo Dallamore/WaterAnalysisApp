@@ -6,4 +6,6 @@
     <string name="pastReadingsButton">Past Readings</string>
 
     <string name="notReadyYet">Not implemented yet</string>
+    <string name="action_new_capture">New Capture</string>
+    <string name="action_settings">Settings</string>
 </resources>

@@ -20,7 +20,7 @@ public class StartMenuActivity extends AppCompatActivity {
     Button.OnClickListener toPhotoActivityOnclickListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            startActivity(new Intent(StartMenuActivity.this, CameraActivity.class));
+            startActivity(new Intent(StartMenuActivity.this, ImageTouchActivity.class));
         }
     };
 
