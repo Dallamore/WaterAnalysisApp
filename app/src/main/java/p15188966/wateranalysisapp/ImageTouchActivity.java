@@ -26,7 +26,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -43,13 +42,13 @@ public class ImageTouchActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.imagetouch);
         mImageView = findViewById(R.id.capturePhotoImageView);
-        Button picBtnB = findViewById(R.id.btnCapture);
-        picBtnB.setOnClickListener(captureBtnOnclickListener);
+//        Button picBtnB = findViewById(R.id.btnCapture);
+//        picBtnB.setOnClickListener(captureBtnOnclickListener);
+        requestCameraPermission();
 
         //Android toolbar
-        Toolbar toolbar=(Toolbar)findViewById(R.id.my_toolbar);
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
-
     }
 
     @Override
@@ -61,31 +60,22 @@ public class ImageTouchActivity extends AppCompatActivity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                // User chose the "Settings" item, show the app settings UI...
+                return true;
 
-        return super.onOptionsItemSelected(item);
+            case R.id.new_capture:
+                requestCameraPermission();
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -176,12 +166,12 @@ public class ImageTouchActivity extends AppCompatActivity{
         }
     }
 
-    Button.OnClickListener captureBtnOnclickListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            requestCameraPermission();
-        }
-    };
+//    Button.OnClickListener captureBtnOnclickListener = new Button.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            requestCameraPermission();
+//        }
+//    };
 
     ImageView.OnTouchListener mainViewTouchListener = new ImageView.OnTouchListener() {
         @Override
