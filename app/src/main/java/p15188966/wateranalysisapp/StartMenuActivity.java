@@ -27,7 +27,6 @@ public class StartMenuActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             startActivity(new Intent(StartMenuActivity.this, PastReadingsActivity.class));
-
 //            Snackbar.make(v, R.string.notReadyYet, Snackbar.LENGTH_SHORT).show();
 
         }

@@ -32,15 +32,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Date;
 
 public class ImageTouchActivity extends AppCompatActivity {
     private ImageView mImageView;
     private String mCurrentPhotoPath;
+
+    private int redValue, greenValue, blueValue;
 
     /**
      * Called when the activity is first created.
@@ -70,7 +75,7 @@ public class ImageTouchActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_analyse:
-                writeToFile("Booonnnnjjooouuurrrrrr", this);
+                writeToFile(redValue, greenValue, blueValue, this);
                 return true;
 
             case R.id.new_capture:
@@ -83,15 +88,6 @@ public class ImageTouchActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
-    }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String imageFileName = "JPEG_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
     }
 
     private Bitmap rotateImage(Bitmap bitmap) {
@@ -117,18 +113,14 @@ public class ImageTouchActivity extends AppCompatActivity {
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
-    private void setPic() {
-		/* There isn't enough memory to open up more than a couple camera photos */
-		/* So pre-scale the target bitmap into which the file is decoded */
-
-		/* Get the size of the ImageView */
+    private void scaleAndSetPic() {
+        /* Get the size of the ImageView */
         int targetW = mImageView.getWidth();
         int targetH = mImageView.getHeight();
 
 		/* Get the size of the image */
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         int photoW = bmOptions.outWidth;
         int photoH = bmOptions.outHeight;
 
@@ -148,11 +140,14 @@ public class ImageTouchActivity extends AppCompatActivity {
 		/* Associate the Bitmap to the ImageView */
         Bitmap mPhoto = rotateImage(bitmap);
         mImageView.setImageBitmap(mPhoto);
-        mImageView.setVisibility(View.VISIBLE);
         mImageView.setOnTouchListener(mainViewTouchListener);
     }
 
     private void startCamera() {
+
+//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        startActivityForResult(intent, REQUEST_CAMERA);
+
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             //Create file where the photo should go
@@ -172,6 +167,15 @@ public class ImageTouchActivity extends AppCompatActivity {
                 startActivityForResult(takePictureIntent, 1);
             }
         }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String imageFileName = "JPEG_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
 //    Button.OnClickListener captureBtnOnclickListener = new Button.OnClickListener() {
@@ -214,9 +218,9 @@ public class ImageTouchActivity extends AppCompatActivity {
 
             int touchedRGB = bitmap.getPixel(x, y);
 
-            int redValue = Color.red(touchedRGB);
-            int blueValue = Color.blue(touchedRGB);
-            int greenValue = Color.green(touchedRGB);
+            redValue = Color.red(touchedRGB);
+            blueValue = Color.blue(touchedRGB);
+            greenValue = Color.green(touchedRGB);
             TextView colourTextBox = findViewById(R.id.colourTextBox);
             TextView colourSampleBox = findViewById(R.id.colourSampleBox);
             String colourBoxString = "R = " + redValue + "\nG = " + greenValue + "\nB = " + blueValue;
@@ -228,11 +232,29 @@ public class ImageTouchActivity extends AppCompatActivity {
 
     };
 
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        ImageView imageView = findViewById(R.id.capturePhotoImageView);
+//        switch (requestCode) {
+//            case REQUEST_CAMERA:
+//                if (resultCode == RESULT_OK) {
+//                    // successfully captured the image
+//                    Bitmap mBitmap = (Bitmap) data.getExtras().get("data");
+//                    if (mBitmap != null) {
+//                        imageView.setImageBitmap(mBitmap);
+//                    }
+//                }
+//            }
+//        }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (mCurrentPhotoPath != null) {
-                setPic();
+                scaleAndSetPic();
                 mCurrentPhotoPath = null;
             }
         }
@@ -259,59 +281,53 @@ public class ImageTouchActivity extends AppCompatActivity {
                 new String[]{Manifest.permission.CAMERA}, 0);
     }
 
+    private JSONObject JSONmaker(int red, int green, int blue) {
+        JSONObject obj = new JSONObject();
+        Date date = new Date();
+        try {
+            obj.put("Date", date);
+            obj.put("Red", red);
+            obj.put("Green", green);
+            obj.put("Blue", blue);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-    private void writeToFile(String data, Context context) {
-        boolean isFilePresent = isFilePresent(this, "waa_data.json");
+    private void writeToFile(int red, int green, int blue, Context context) {
+        boolean isFilePresent = isFilePresent(this);
         if(isFilePresent) {
             try {
                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("waa_data.json", Context.MODE_PRIVATE));
-                outputStreamWriter.write(data);
+                outputStreamWriter.write(JSONmaker(red,green,blue).toString());
                 outputStreamWriter.close();
                 Toast.makeText(context, "Successfully analysed", Toast.LENGTH_SHORT).show();
-
             }
             catch (IOException e) {
                 Log.e("Exception", "File write failed: " + e.toString());
             }
         } else {
-            create(this, "waa_data.json",data);
+            createJsonFile(JSONmaker(red,green,blue).toString());
         }
     }
 
-    public boolean isFilePresent(Context context, String fileName) {
-        String path = context.getFilesDir().getAbsolutePath() + "/" + fileName;
+    public boolean isFilePresent(Context context) {
+        String path = context.getFilesDir().getAbsolutePath() + "/" + "waa_data.json";
         File file = new File(path);
         return file.exists();
     }
 
-    private boolean create(Context context, String fileName, String jsonString){
+    private void createJsonFile(String jsonString){
         try {
-            FileOutputStream fos = openFileOutput(fileName,Context.MODE_PRIVATE);
+            FileOutputStream fos = openFileOutput("waa_data.json",Context.MODE_PRIVATE);
             if (jsonString != null) {
                 fos.write(jsonString.getBytes());
             }
             fos.close();
-            return true;
-        } catch (FileNotFoundException fileNotFound) {
-            return false;
+
         } catch (IOException ioException) {
-            return false;
+            ioException.printStackTrace();
         }
-
     }
-
-
-
 }
