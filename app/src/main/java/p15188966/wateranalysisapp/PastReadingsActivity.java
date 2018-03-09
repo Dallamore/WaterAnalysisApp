@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -26,7 +25,6 @@ public class PastReadingsActivity extends AppCompatActivity {
     }
 
     private void readFromFile(Context context) {
-        String ret = "";
         try {
             InputStream inputStream = context.openFileInput("waa_data.json");
 
@@ -41,16 +39,9 @@ public class PastReadingsActivity extends AppCompatActivity {
                 }
 
                 inputStream.close();
-                ret = stringBuilder.toString();
+                String ret = stringBuilder.toString();
 
-                setReadingsTextBox(ret);
-
-//                try {
-//                    JSONObject json = new JSONObject(ret);
-//                    JSONdecoder(json);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
+                jsonDecoder(ret);
             }
         } catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());
@@ -59,20 +50,23 @@ public class PastReadingsActivity extends AppCompatActivity {
         }
     }
 
-    private void JSONdecoder(JSONObject data) {
-        try {
-            String redDat = data.getString("red");
-            setReadingsTextBox(redDat + " " + "Alex Smells");
-        } catch (JSONException e) {
+    private void  jsonDecoder(String yolo){
+        TextView textView1 = findViewById(R.id.pastReadingsContentTextView);
+        try{
+            JSONObject data=(new JSONObject(yolo)).getJSONObject("readings");
+            String date = data.getString("date");
+            int rValue = data.getInt("red");
+            int gValue = data.getInt("green");
+            int bValue = data.getInt("blue");
+
+            String str="Date: " + date + "\n" +
+                    "Red: " + rValue + "\n" +
+                    "Green: " + gValue + "\n" +
+                    "Blue: " + bValue;
+            textView1.setText(str);
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    private void setReadingsTextBox(String setMe) {
-        TextView tv1 = findViewById(R.id.pastReadingsContentTextView);
-        tv1.setText(setMe);
-
-    }
-
-
 }

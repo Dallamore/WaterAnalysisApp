@@ -289,6 +289,8 @@ public class ImageTouchActivity extends AppCompatActivity {
             obj.put("Red", red);
             obj.put("Green", green);
             obj.put("Blue", blue);
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
