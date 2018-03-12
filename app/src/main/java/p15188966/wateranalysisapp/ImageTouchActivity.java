@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,8 +56,6 @@ public class ImageTouchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.imagetouch);
         mImageView = findViewById(R.id.capturePhotoImageView);
-//        Button picBtnB = findViewById(R.id.btnCapture);
-//        picBtnB.setOnClickListener(captureBtnOnclickListener);
         requestCameraPermission();
 
         //Android toolbar
@@ -86,7 +85,6 @@ public class ImageTouchActivity extends AppCompatActivity {
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
-
         }
     }
 
@@ -144,10 +142,6 @@ public class ImageTouchActivity extends AppCompatActivity {
     }
 
     private void startCamera() {
-
-//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        startActivityForResult(intent, REQUEST_CAMERA);
-
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             //Create file where the photo should go
@@ -177,13 +171,6 @@ public class ImageTouchActivity extends AppCompatActivity {
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
-
-//    Button.OnClickListener captureBtnOnclickListener = new Button.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            requestCameraPermission();
-//        }
-//    };
 
     ImageView.OnTouchListener mainViewTouchListener = new ImageView.OnTouchListener() {
         @Override
@@ -232,24 +219,6 @@ public class ImageTouchActivity extends AppCompatActivity {
 
     };
 
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        ImageView imageView = findViewById(R.id.capturePhotoImageView);
-//        switch (requestCode) {
-//            case REQUEST_CAMERA:
-//                if (resultCode == RESULT_OK) {
-//                    // successfully captured the image
-//                    Bitmap mBitmap = (Bitmap) data.getExtras().get("data");
-//                    if (mBitmap != null) {
-//                        imageView.setImageBitmap(mBitmap);
-//                    }
-//                }
-//            }
-//        }
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -281,22 +250,6 @@ public class ImageTouchActivity extends AppCompatActivity {
                 new String[]{Manifest.permission.CAMERA}, 0);
     }
 
-    private JSONObject JSONmaker(int red, int green, int blue) {
-        JSONObject obj = new JSONObject();
-        Date date = new Date();
-        try {
-            obj.put("Date", date);
-            obj.put("Red", red);
-            obj.put("Green", green);
-            obj.put("Blue", blue);
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return obj;
-    }
-
     private void writeToFile(int red, int green, int blue, Context context) {
         boolean isFilePresent = isFilePresent(this);
         if(isFilePresent) {
@@ -312,6 +265,28 @@ public class ImageTouchActivity extends AppCompatActivity {
         } else {
             createJsonFile(JSONmaker(red,green,blue).toString());
         }
+    }
+
+    private JSONObject JSONmaker(int red, int green, int blue) {
+        JSONObject readings = new JSONObject();
+        Date date = new Date();
+        try {
+            readings.put("Date", date);
+            readings.put("Red", red);
+            readings.put("Green", green);
+            readings.put("Blue", blue);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.put(readings);
+        JSONObject finalObj = new JSONObject();
+        try {
+            finalObj.put("readings", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return finalObj;
     }
 
     public boolean isFilePresent(Context context) {

@@ -21,28 +21,23 @@ public class PastReadingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_past_readings);
-        jsonDecoder();
-
+        readFromFile(this);
     }
 
     private void readFromFile(Context context) {
         try {
             InputStream inputStream = context.openFileInput("waa_data.json");
-
             if (inputStream != null) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveString;
                 StringBuilder stringBuilder = new StringBuilder();
-
                 while ((receiveString = bufferedReader.readLine()) != null) {
                     stringBuilder.append(receiveString);
                 }
-
                 inputStream.close();
                 String ret = stringBuilder.toString();
-
-//                jsonDecoder(ret);
+                jsonDecoder(ret);
             }
         } catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());
@@ -51,43 +46,32 @@ public class PastReadingsActivity extends AppCompatActivity {
         }
     }
 
-    public static final String JSON_STRING="{\"readings\":[{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"22.02.1997\",\"red\":345,\"green\":769,\"blue\":246}]}\n";
+//    public static final String JSON_STRING="{\"readings\":[{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"22.02.1997\",\"red\":345,\"green\":769,\"blue\":246}]}\n";
+//    public static final String JSON_STRING="{\"readings\":[{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"22.02.1997\",\"red\":345,\"green\":769,\"blue\":246},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70}]}\n";
 
-    private void  jsonDecoder(){
+    private void  jsonDecoder(String jsonString){
         TextView textView1 = findViewById(R.id.pastReadingsContentTextView);
-
         try{
-//            HashMap<Integer, ArrayList<JSONObject>> hashReads = new HashMap<>();
-//
-            JSONObject data= new JSONObject(JSON_STRING);
-
+            JSONObject data= new JSONObject(jsonString);
             JSONArray jRay = data.getJSONArray("readings");
-//
-//            for (int i = 0; i < data.length(); i++){
-//                ArrayList<JSONObject> current = new ArrayList<>();
-//                current.add(jRay.getJSONObject(i));
-//                hashReads.put(i,current);
-//            }
-
             String str = "";
             textView1.setText(str);
 
             for (int i = 0; i < jRay.length(); i++){
-                String date = jRay.getJSONObject(i).getString("date");
-                int rValue = jRay.getJSONObject(i).getInt("red");
-                int gValue = jRay.getJSONObject(i).getInt("green");
-                int bValue = jRay.getJSONObject(i).getInt("blue");
+                String date = jRay.getJSONObject(i).getString("Date");
+                int rValue = jRay.getJSONObject(i).getInt("Red");
+                int gValue = jRay.getJSONObject(i).getInt("Green");
+                int bValue = jRay.getJSONObject(i).getInt("Blue");
 
-                textView1.setText(textView1.getText() + ("Date: " + date + "\n" +
+
+                String tempString = textView1.getText() + "Date: " + date + "\n" +
                         "Red: " + rValue + "\n" +
                         "Green: " + gValue + "\n" +
-                        "Blue: " + bValue + "\n\n"
-                ));
+                        "Blue: " + bValue + "\n\n";
+
+                textView1.setText(tempString);
+
             }
-
-            textView1.setText(textView1.getText() + "\n\nHello");
-
-
         }
         catch (Exception e) {
             e.printStackTrace();
