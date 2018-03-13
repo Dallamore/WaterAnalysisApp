@@ -78,8 +78,12 @@ public class ImageTouchActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case R.id.action_analyse:
-                readFromFile();
-//                writeToFile(redValue, greenValue, blueValue, this);
+                if (isFilePresent(this)){
+                    readFromFile();
+                }
+                else{
+                    writeToFile(" ");
+                }
                 return true;
 
             case R.id.new_capture:
@@ -184,32 +188,25 @@ public class ImageTouchActivity extends AppCompatActivity {
             float eventX = event.getX();
             float eventY = event.getY();
             float[] eventXY = new float[]{eventX, eventY};
-
             Matrix invertMatrix = new Matrix();
             ((ImageView) view).getImageMatrix().invert(invertMatrix);
-
             invertMatrix.mapPoints(eventXY);
             int x = (int) eventXY[0];
             int y = (int) eventXY[1];
-
             Drawable imgDrawable = ((ImageView) view).getDrawable();
             Bitmap bitmap = ((BitmapDrawable) imgDrawable).getBitmap();
-
             //Limit x, y range within bitmap
             if (x < 0) {
                 x = 0;
             } else if (x > bitmap.getWidth() - 1) {
                 x = bitmap.getWidth() - 1;
             }
-
             if (y < 0) {
                 y = 0;
             } else if (y > bitmap.getHeight() - 1) {
                 y = bitmap.getHeight() - 1;
             }
-
             int touchedRGB = bitmap.getPixel(x, y);
-
             redValue = Color.red(touchedRGB);
             blueValue = Color.blue(touchedRGB);
             greenValue = Color.green(touchedRGB);
@@ -218,7 +215,6 @@ public class ImageTouchActivity extends AppCompatActivity {
             String colourBoxString = "R = " + redValue + "\nG = " + greenValue + "\nB = " + blueValue;
             colourTextBox.setText(colourBoxString);
             colourSampleBox.setBackgroundColor(Color.rgb(redValue, greenValue, blueValue));
-
             return true;
         }
     };
@@ -297,7 +293,7 @@ public class ImageTouchActivity extends AppCompatActivity {
     private void readFromFile() {
         try {
             InputStream inputStream = openFileInput("waa_data.json");
-            if (inputStream != null) { //file has content
+            if (inputStream != null) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveString;
@@ -334,9 +330,6 @@ public class ImageTouchActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-            } else {//file does not have content
-                writeToFile(redValue, greenValue, blueValue, this);
             }
         } catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());
@@ -347,31 +340,19 @@ public class ImageTouchActivity extends AppCompatActivity {
 
     private void writeToFile(String jsonData) {
         try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.openFileOutput("waa_data.json", Context.MODE_PRIVATE));
-            outputStreamWriter.write(jsonData);
-            outputStreamWriter.close();
-            Toast.makeText(this, "Successfully analysed", Toast.LENGTH_SHORT).show();
+            if (isFilePresent(this)) {
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.openFileOutput("waa_data.json", Context.MODE_PRIVATE));
+                outputStreamWriter.write(jsonData);
+                outputStreamWriter.close();
+                Toast.makeText(this, R.string.analysisSuccess, Toast.LENGTH_SHORT).show();
+                //TODO
+            }
+            else {
+                createJsonFile(jsonMaker(redValue, greenValue, blueValue).toString());
+                Toast.makeText(this, R.string.analysisSuccess, Toast.LENGTH_SHORT).show();
+            }
         } catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
-        }
-
-    }
-
-    private void writeToFile(int red, int green, int blue, Context context) {
-        boolean isFilePresent = isFilePresent(this);
-        String newJson = jsonMaker(red, green, blue).toString();
-
-        if (isFilePresent) {
-            try {
-                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("waa_data.json", Context.MODE_PRIVATE));
-                outputStreamWriter.write(newJson);
-                outputStreamWriter.close();
-                Toast.makeText(context, "Successfully analysed", Toast.LENGTH_SHORT).show();
-            } catch (IOException e) {
-                Log.e("Exception", "File write failed: " + e.toString());
-            }
-        } else {
-            createJsonFile(jsonMaker(red, green, blue).toString());
         }
     }
 }

@@ -37,7 +37,6 @@ public class PastReadingsActivity extends AppCompatActivity {
                 inputStream.close();
                 String ret = stringBuilder.toString();
                 jsonDecoder(ret);
-
             }
         } catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());

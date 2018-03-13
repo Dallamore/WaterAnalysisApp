@@ -8,6 +8,7 @@
     <string name="action_new_capture">New Capture</string>
     <string name="action_save">Analyse</string>
     <string name="pastBlockText">No Readings Logged</string>
+    <string name="analysisSuccess">Successfully Analysed</string>
 
     <string name="lorum">
         The classic “Lorem ipsum dolor sit amet…” passage is attributed to a remixing of the Roman philosopher Ciceros 45 BC text
