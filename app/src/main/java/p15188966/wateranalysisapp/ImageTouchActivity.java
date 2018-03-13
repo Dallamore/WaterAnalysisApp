@@ -36,16 +36,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Date;
 
 public class ImageTouchActivity extends AppCompatActivity {
     private ImageView mImageView;
     private String mCurrentPhotoPath;
-
     private int redValue, greenValue, blueValue;
 
     /**
@@ -73,8 +76,10 @@ public class ImageTouchActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+
             case R.id.action_analyse:
-                writeToFile(redValue, greenValue, blueValue, this);
+                readFromFile();
+//                writeToFile(redValue, greenValue, blueValue, this);
                 return true;
 
             case R.id.new_capture:
@@ -216,7 +221,6 @@ public class ImageTouchActivity extends AppCompatActivity {
 
             return true;
         }
-
     };
 
     @Override
@@ -250,24 +254,7 @@ public class ImageTouchActivity extends AppCompatActivity {
                 new String[]{Manifest.permission.CAMERA}, 0);
     }
 
-    private void writeToFile(int red, int green, int blue, Context context) {
-        boolean isFilePresent = isFilePresent(this);
-        if(isFilePresent) {
-            try {
-                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("waa_data.json", Context.MODE_PRIVATE));
-                outputStreamWriter.write(JSONmaker(red,green,blue).toString());
-                outputStreamWriter.close();
-                Toast.makeText(context, "Successfully analysed", Toast.LENGTH_SHORT).show();
-            }
-            catch (IOException e) {
-                Log.e("Exception", "File write failed: " + e.toString());
-            }
-        } else {
-            createJsonFile(JSONmaker(red,green,blue).toString());
-        }
-    }
-
-    private JSONObject JSONmaker(int red, int green, int blue) {
+    private JSONObject jsonMaker(int red, int green, int blue) {
         JSONObject readings = new JSONObject();
         Date date = new Date();
         try {
@@ -282,7 +269,7 @@ public class ImageTouchActivity extends AppCompatActivity {
         jsonArray.put(readings);
         JSONObject finalObj = new JSONObject();
         try {
-            finalObj.put("readings", jsonArray);
+            finalObj.put("Readings", jsonArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -295,16 +282,96 @@ public class ImageTouchActivity extends AppCompatActivity {
         return file.exists();
     }
 
-    private void createJsonFile(String jsonString){
+    private void createJsonFile(String jsonString) {
         try {
-            FileOutputStream fos = openFileOutput("waa_data.json",Context.MODE_PRIVATE);
+            FileOutputStream fos = openFileOutput("waa_data.json", Context.MODE_PRIVATE);
             if (jsonString != null) {
                 fos.write(jsonString.getBytes());
             }
             fos.close();
-
         } catch (IOException ioException) {
             ioException.printStackTrace();
+        }
+    }
+
+    private void readFromFile() {
+        try {
+            InputStream inputStream = openFileInput("waa_data.json");
+            if (inputStream != null) { //file has content
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString;
+                StringBuilder stringBuilder = new StringBuilder();
+                while ((receiveString = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(receiveString);
+                }
+                inputStream.close();
+                String ret = stringBuilder.toString();
+                JSONObject data;
+                JSONArray jRay;
+                try {
+                    data = new JSONObject(ret);
+                    jRay = data.getJSONArray("Readings");
+
+                    JSONObject currentData = new JSONObject();
+                    Date date = new Date();
+                    try {
+                        currentData.put("Date", date);
+                        currentData.put("Red", redValue);
+                        currentData.put("Green", greenValue);
+                        currentData.put("Blue", blueValue);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    jRay.put(currentData);
+                    JSONObject finalObj = new JSONObject();
+                    try {
+                        finalObj.put("Readings", jRay);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    writeToFile(finalObj.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            } else {//file does not have content
+                writeToFile(redValue, greenValue, blueValue, this);
+            }
+        } catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+    }
+
+    private void writeToFile(String jsonData) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.openFileOutput("waa_data.json", Context.MODE_PRIVATE));
+            outputStreamWriter.write(jsonData);
+            outputStreamWriter.close();
+            Toast.makeText(this, "Successfully analysed", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+
+    }
+
+    private void writeToFile(int red, int green, int blue, Context context) {
+        boolean isFilePresent = isFilePresent(this);
+        String newJson = jsonMaker(red, green, blue).toString();
+
+        if (isFilePresent) {
+            try {
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("waa_data.json", Context.MODE_PRIVATE));
+                outputStreamWriter.write(newJson);
+                outputStreamWriter.close();
+                Toast.makeText(context, "Successfully analysed", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                Log.e("Exception", "File write failed: " + e.toString());
+            }
+        } else {
+            createJsonFile(jsonMaker(red, green, blue).toString());
         }
     }
 }
