@@ -44,7 +44,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class ImageTouchActivity extends AppCompatActivity {
     private ImageView mImageView;
@@ -70,6 +72,7 @@ public class ImageTouchActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         return true;
     }
 
@@ -252,7 +255,7 @@ public class ImageTouchActivity extends AppCompatActivity {
 
     private JSONObject jsonMaker(int red, int green, int blue) {
         JSONObject readings = new JSONObject();
-        Date date = new Date();
+        SimpleDateFormat date = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
         try {
             readings.put("Date", date);
             readings.put("Red", red);
@@ -345,7 +348,6 @@ public class ImageTouchActivity extends AppCompatActivity {
                 outputStreamWriter.write(jsonData);
                 outputStreamWriter.close();
                 Toast.makeText(this, R.string.analysisSuccess, Toast.LENGTH_SHORT).show();
-                //TODO
             }
             else {
                 createJsonFile(jsonMaker(redValue, greenValue, blueValue).toString());

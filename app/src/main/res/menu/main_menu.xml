@@ -1,17 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <!--<item-->
-        <!--android:id="@+id/action_favorite"-->
-        <!--android:icon="@drawable/ic_launcher_background"-->
-        <!--android:title="@string/action_favorite"-->
-        <!--app:showAsAction="ifRoom"/>-->
-
     <item android:id="@+id/action_analyse"
         android:title="@string/action_save"
-        app:showAsAction="never"/>
-
+        android:icon="@drawable/ic_action_save"
+        app:showAsAction="ifRoom"/>
     <item android:id="@+id/new_capture"
         android:title="@string/action_new_capture"
-        app:showAsAction="never"/>
+        android:icon="@drawable/ic_action_camera"
+        app:showAsAction="ifRoom"/>
 </menu>
