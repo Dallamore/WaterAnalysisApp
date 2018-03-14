@@ -9,13 +9,10 @@
     <ImageView
         android:id="@+id/capturePhotoImageView"
         android:layout_width="331dp"
-        android:layout_height="558dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="621dp"
+        android:layout_marginTop="16dp"
         android:contentDescription="@string/app_name"
-        app:layout_constraintBottom_toTopOf="@+id/colourTextBox"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,8 +20,9 @@
         android:id="@+id/colourTextBox"
         android:layout_width="87dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:background="#a4000000"
         android:backgroundTint="@android:color/background_dark"
         android:shadowColor="@android:color/black"
@@ -32,29 +30,50 @@
         android:shadowDy="0"
         android:shadowRadius="7"
         android:singleLine="false"
+        android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/my_toolbar"
-        app:layout_constraintStart_toEndOf="@+id/colourSampleBox" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/colourSampleBox"
+        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView"
+        app:layout_constraintVertical_bias="0.255" />
 
     <TextView
         android:id="@+id/colourSampleBox"
         android:layout_width="15dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="28dp"
-        android:layout_marginStart="64dp"
-        app:layout_constraintBottom_toTopOf="@+id/my_toolbar"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView"
+        app:layout_constraintVertical_bias="0.255" />
+
+    <Button
+        android:id="@+id/newPhotoButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="156dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/ic_action_camera"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView"
+        app:layout_constraintVertical_bias="0.255" />
+
+    <Button
+        android:id="@+id/analyseResultsButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/ic_action_save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView"
+        app:layout_constraintVertical_bias="0.255" />
 
 </android.support.constraint.ConstraintLayout>

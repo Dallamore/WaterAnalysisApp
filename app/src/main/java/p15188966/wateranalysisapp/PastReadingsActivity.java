@@ -53,8 +53,8 @@ public class PastReadingsActivity extends AppCompatActivity {
         try{
             JSONObject data = new JSONObject(jsonString);
             JSONArray jRay = data.getJSONArray("Readings");
-            String str = "";
-            textView1.setText(str);
+//            textView1.setText(jsonString + "\n\n" + jRay.length());
+            textView1.setText("");
             for (int i = 0; i < jRay.length(); i++){
                 String date = jRay.getJSONObject(i).getString("Date");
                 int rValue = jRay.getJSONObject(i).getInt("Red");
@@ -72,62 +72,3 @@ public class PastReadingsActivity extends AppCompatActivity {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-//            HashMap<Integer, ArrayList<JSONObject>> hashReads = new HashMap<>();
-//
-//
-//            JSONObject data=(new JSONObject(JSON_STRING)).getJSONObject("Readings");
-//
-//            JSONArray jRay = data.getJSONArray("Readings");
-//
-//            for (int i = 0; i < data.length(); i++){
-//                ArrayList<JSONObject> current = new ArrayList<>();
-//                current.add(jRay.getJSONObject(i));
-//                hashReads.put(i,current);
-//            }
-//
-////            String date = data.getString("date");
-////            int rValue = data.getInt("red");
-////            int gValue = data.getInt("green");
-////            int bValue = data.getInt("blue");
-////
-////            String str="Date: " + date + "\n" +
-////                    "Red: " + rValue + "\n" +
-////                    "Green: " + gValue + "\n" +
-////                    "Blue: " + bValue;
-
-
-
-
-
-
-
-//
-//    ArrayList<String> contactList;
-//
-//    JSONObject jsonObj = new JSONObject(JSON_STRING);
-//    JSONArray contacts = jsonObj.getJSONArray("Readings");
-//
-//            Toast.makeText(this, "5", Toast.LENGTH_SHORT).show();
-//
-//                    String str = " ";
-//
-//                    for (int i = 0; i < contacts.length(); i++){
-//        JSONObject cJO = contacts.getJSONObject(i);
-//        Integer cInt = i;
-//        String cDat = cJO.getString("date");
-////                HashMap<Integer, String> cHas = new HashMap<>();
-////                cHas.put(cInt, cDat);
-//        str = (cInt.toString() + " " + cDat);
-//        }

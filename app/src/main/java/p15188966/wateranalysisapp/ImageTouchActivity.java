@@ -22,12 +22,10 @@ import android.support.media.ExifInterface;
 import android.support.v13.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,9 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 public class ImageTouchActivity extends AppCompatActivity {
     private ImageView mImageView;
@@ -62,43 +58,28 @@ public class ImageTouchActivity extends AppCompatActivity {
         setContentView(R.layout.imagetouch);
         mImageView = findViewById(R.id.capturePhotoImageView);
         requestCameraPermission();
-
-        //Android toolbar
-        Toolbar toolbar = findViewById(R.id.my_toolbar);
-        setSupportActionBar(toolbar);
+        Button newPhotoButton = findViewById(R.id.newPhotoButton);
+        newPhotoButton.setOnClickListener(newCaptureButtonListener);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        return true;
-    }
+    Button.OnClickListener newCaptureButtonListener = new Button.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            requestCameraPermission();
+        }
+    };
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case R.id.action_analyse:
-                if (isFilePresent(this)){
+    Button.OnClickListener analyseResultsButtonListener = new Button.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (isFilePresent(getApplicationContext())){
                     readFromFile();
                 }
                 else{
-                    writeToFile(" ");
+                    writeToFile("");
                 }
-                return true;
-
-            case R.id.new_capture:
-                requestCameraPermission();
-                return true;
-
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
         }
-    }
+    };
 
     private Bitmap rotateImage(Bitmap bitmap) {
         ExifInterface exifInterface;
@@ -218,6 +199,9 @@ public class ImageTouchActivity extends AppCompatActivity {
             String colourBoxString = "R = " + redValue + "\nG = " + greenValue + "\nB = " + blueValue;
             colourTextBox.setText(colourBoxString);
             colourSampleBox.setBackgroundColor(Color.rgb(redValue, greenValue, blueValue));
+
+            Button analsyeResultsButton = findViewById(R.id.analyseResultsButton);
+            analsyeResultsButton.setOnClickListener(analyseResultsButtonListener);
             return true;
         }
     };
@@ -255,7 +239,7 @@ public class ImageTouchActivity extends AppCompatActivity {
 
     private JSONObject jsonMaker(int red, int green, int blue) {
         JSONObject readings = new JSONObject();
-        SimpleDateFormat date = new SimpleDateFormat("dd-MM-yyyy", Locale.UK);
+        Date date = new Date();
         try {
             readings.put("Date", date);
             readings.put("Red", red);
@@ -308,10 +292,10 @@ public class ImageTouchActivity extends AppCompatActivity {
                 String ret = stringBuilder.toString();
                 JSONObject data;
                 JSONArray jRay;
+                JSONArray finalJray = new JSONArray();
                 try {
                     data = new JSONObject(ret);
                     jRay = data.getJSONArray("Readings");
-
                     JSONObject currentData = new JSONObject();
                     Date date = new Date();
                     try {
@@ -322,10 +306,13 @@ public class ImageTouchActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    jRay.put(currentData);
+                    finalJray.put(currentData);
+                    for (int i = 0; i < jRay.length(); i++){
+                        finalJray.put(jRay.get(i));
+                    }
                     JSONObject finalObj = new JSONObject();
                     try {
-                        finalObj.put("Readings", jRay);
+                        finalObj.put("Readings", finalJray);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
