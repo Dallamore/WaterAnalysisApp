@@ -42,10 +42,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.text.DateFormat;
 import java.util.Date;
 
 public class ImageTouchActivity extends AppCompatActivity {
-    private ImageView mImageView;
     private String mCurrentPhotoPath;
     private int redValue, greenValue, blueValue;
 
@@ -56,10 +56,10 @@ public class ImageTouchActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.imagetouch);
-        mImageView = findViewById(R.id.capturePhotoImageView);
         requestCameraPermission();
         Button newPhotoButton = findViewById(R.id.newPhotoButton);
         newPhotoButton.setOnClickListener(newCaptureButtonListener);
+        findViewById(R.id.slideGradientImageView).setOnTouchListener(userNitrateTouchListener);
     }
 
     Button.OnClickListener newCaptureButtonListener = new Button.OnClickListener() {
@@ -72,12 +72,11 @@ public class ImageTouchActivity extends AppCompatActivity {
     Button.OnClickListener analyseResultsButtonListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (isFilePresent(getApplicationContext())){
-                    readFromFile();
-                }
-                else{
-                    writeToFile("");
-                }
+            if (isFilePresent(getApplicationContext())) {
+                readFromFile();
+            } else {
+                writeToFile("");
+            }
         }
     };
 
@@ -105,6 +104,8 @@ public class ImageTouchActivity extends AppCompatActivity {
     }
 
     private void scaleAndSetPic() {
+        ImageView mImageView = findViewById(R.id.capturePhotoImageView);
+
         /* Get the size of the ImageView */
         int targetW = mImageView.getWidth();
         int targetH = mImageView.getHeight();
@@ -168,7 +169,6 @@ public class ImageTouchActivity extends AppCompatActivity {
     ImageView.OnTouchListener mainViewTouchListener = new ImageView.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
-
             float eventX = event.getX();
             float eventY = event.getY();
             float[] eventXY = new float[]{eventX, eventY};
@@ -202,6 +202,28 @@ public class ImageTouchActivity extends AppCompatActivity {
 
             Button analsyeResultsButton = findViewById(R.id.analyseResultsButton);
             analsyeResultsButton.setOnClickListener(analyseResultsButtonListener);
+            return true;
+        }
+    };
+
+    ImageView.OnTouchListener userNitrateTouchListener = new ImageView.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent event) {
+            int x = (int) event.getX();
+            int y = (int) event.getY();
+
+            Drawable imgDrawable = ((ImageView) view).getDrawable();
+            Bitmap bitmap = ((BitmapDrawable) imgDrawable).getBitmap();
+
+            int touchedRGB = bitmap.getPixel(x, y);
+            int userR = Color.red(touchedRGB);
+            int userG = Color.blue(touchedRGB);
+            int userB = Color.green(touchedRGB);
+            TextView userColourTextBox = findViewById(R.id.userColourTextBox);
+            TextView userColourSampleBox = findViewById(R.id.userColourSampleBox);
+            String colourBoxString = "R = " + userR + "\nG = " + userG + "\nB = " + userB;
+            userColourTextBox.setText(colourBoxString);
+            userColourSampleBox.setBackgroundColor(Color.rgb(userR, userG, userB));
             return true;
         }
     };
@@ -240,8 +262,9 @@ public class ImageTouchActivity extends AppCompatActivity {
     private JSONObject jsonMaker(int red, int green, int blue) {
         JSONObject readings = new JSONObject();
         Date date = new Date();
+        String stringDate = DateFormat.getDateTimeInstance().format(date);
         try {
-            readings.put("Date", date);
+            readings.put("Date", stringDate);
             readings.put("Red", red);
             readings.put("Green", green);
             readings.put("Blue", blue);
@@ -298,8 +321,9 @@ public class ImageTouchActivity extends AppCompatActivity {
                     jRay = data.getJSONArray("Readings");
                     JSONObject currentData = new JSONObject();
                     Date date = new Date();
+                    String stringDate = DateFormat.getDateTimeInstance().format(date);
                     try {
-                        currentData.put("Date", date);
+                        currentData.put("Date", stringDate);
                         currentData.put("Red", redValue);
                         currentData.put("Green", greenValue);
                         currentData.put("Blue", blueValue);
@@ -307,7 +331,7 @@ public class ImageTouchActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     finalJray.put(currentData);
-                    for (int i = 0; i < jRay.length(); i++){
+                    for (int i = 0; i < jRay.length(); i++) {
                         finalJray.put(jRay.get(i));
                     }
                     JSONObject finalObj = new JSONObject();
@@ -335,8 +359,7 @@ public class ImageTouchActivity extends AppCompatActivity {
                 outputStreamWriter.write(jsonData);
                 outputStreamWriter.close();
                 Toast.makeText(this, R.string.analysisSuccess, Toast.LENGTH_SHORT).show();
-            }
-            else {
+            } else {
                 createJsonFile(jsonMaker(redValue, greenValue, blueValue).toString());
                 Toast.makeText(this, R.string.analysisSuccess, Toast.LENGTH_SHORT).show();
             }

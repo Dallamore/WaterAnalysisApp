@@ -48,14 +48,14 @@ public class PastReadingsActivity extends AppCompatActivity {
 //    public static final String JSON_STRING="{\"Readings\":[{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"22.02.1997\",\"red\":345,\"green\":769,\"blue\":246}]}\n";
 //    public static final String JSON_STRING="{\"Readings\":[{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"22.02.1997\",\"red\":345,\"green\":769,\"blue\":246},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70}]}\n";
 
-    private void jsonDecoder(String jsonString){
+    private void jsonDecoder(String jsonString) {
         TextView textView1 = findViewById(R.id.pastReadingsContentTextView);
-        try{
+        try {
             JSONObject data = new JSONObject(jsonString);
             JSONArray jRay = data.getJSONArray("Readings");
 //            textView1.setText(jsonString + "\n\n" + jRay.length());
             textView1.setText("");
-            for (int i = 0; i < jRay.length(); i++){
+            for (int i = 0; i < jRay.length(); i++) {
                 String date = jRay.getJSONObject(i).getString("Date");
                 int rValue = jRay.getJSONObject(i).getInt("Red");
                 int gValue = jRay.getJSONObject(i).getInt("Green");
@@ -66,8 +66,7 @@ public class PastReadingsActivity extends AppCompatActivity {
                         "Blue: " + bValue + "\n\n";
                 textView1.setText(tempString);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

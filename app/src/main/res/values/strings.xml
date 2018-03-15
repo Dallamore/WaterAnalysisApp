@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WaterAnalysisApp</string>
+    <string name="app_name">Water Analysis</string>
     <string name="btnCapture">Capture Photo</string>
     <string name="camera_permission_denied">Camera permission request was denied.</string>
     <string name="LogoImageView">Logo</string>
@@ -9,6 +9,16 @@
     <string name="action_save">Analyse</string>
     <string name="pastBlockText">No Readings Logged</string>
     <string name="analysisSuccess">Successfully Analysed</string>
+    <string name="createdByName">Created by David Dallamore</string>
+    <string name="pNum">P15188966</string>
+
+    <string name="zero">0</string>
+    <string name="twenty">20</string>
+    <string name="fourty">40</string>
+    <string name="eighty">80</string>
+    <string name="oneSixty">160</string>
+    <string name="twoHundred">200</string>
+
 
     <string name="lorum">
         The classic “Lorem ipsum dolor sit amet…” passage is attributed to a remixing of the Roman philosopher Ciceros 45 BC text
