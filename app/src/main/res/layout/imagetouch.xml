@@ -82,7 +82,7 @@
 
 
     <TextView
-        android:id="@+id/nitratePPMBox"
+        android:id="@+id/nitratePPMColour"
         android:layout_width="15dp"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
@@ -90,13 +90,13 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         app:layout_constraintBottom_toTopOf="@+id/newPhotoButton"
-        app:layout_constraintEnd_toStartOf="@+id/sampleNitratePPMBox"
+        app:layout_constraintEnd_toStartOf="@+id/nitratePPMText"
         app:layout_constraintHorizontal_bias="0.764"
         app:layout_constraintStart_toEndOf="@+id/colourTextBox"
         app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView" />
 
     <TextView
-        android:id="@+id/sampleNitratePPMBox"
+        android:id="@+id/nitratePPMText"
         android:layout_width="87dp"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
@@ -138,12 +138,12 @@
 
     <ImageView
         android:id="@+id/slideGradientImageView"
-        android:layout_width="29dp"
+        android:layout_width="24dp"
         android:layout_height="560dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/gradient_shape"
         android:contentDescription="slider"
+        android:src="@drawable/slider_gradient"
         app:layout_constraintStart_toEndOf="@+id/capturePhotoImageView"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -192,8 +192,8 @@ public class ImageTouchActivity extends AppCompatActivity {
             }
             int touchedRGB = bitmap.getPixel(x, y);
             redValue = Color.red(touchedRGB);
-            blueValue = Color.blue(touchedRGB);
             greenValue = Color.green(touchedRGB);
+            blueValue = Color.blue(touchedRGB);
             TextView colourTextBox = findViewById(R.id.colourTextBox);
             TextView colourSampleBox = findViewById(R.id.colourSampleBox);
             String colourBoxString = "R = " + redValue + "\nG = " + greenValue + "\nB = " + blueValue;
@@ -202,28 +202,52 @@ public class ImageTouchActivity extends AppCompatActivity {
 
             Button analsyeResultsButton = findViewById(R.id.analyseResultsButton);
             analsyeResultsButton.setOnClickListener(analyseResultsButtonListener);
+            calculatePPM();
+
             return true;
         }
     };
 
+    private void calculatePPM() {
+        TextView ppmText = findViewById(R.id.nitratePPMText);
+        TextView ppmColour = findViewById(R.id.nitratePPMColour);
+        ppmText.setText("Calculate Nitrate PPM");
+        ppmColour.setBackgroundColor(Color.rgb(redValue,greenValue,blueValue));
+    }
+
     ImageView.OnTouchListener userNitrateTouchListener = new ImageView.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
-            int x = (int) event.getX();
-            int y = (int) event.getY();
-
+            float eventX = event.getX();
+            float eventY = event.getY();
+            float[] eventXY = new float[]{eventX, eventY};
+            Matrix invertMatrix = new Matrix();
+            ((ImageView) view).getImageMatrix().invert(invertMatrix);
+            invertMatrix.mapPoints(eventXY);
+            int x = (int) eventXY[0];
+            int y = (int) eventXY[1];
             Drawable imgDrawable = ((ImageView) view).getDrawable();
             Bitmap bitmap = ((BitmapDrawable) imgDrawable).getBitmap();
-
+            //Limit x, y range within bitmap
+            if (x < 0) {
+                x = 0;
+            } else if (x > bitmap.getWidth() - 1) {
+                x = bitmap.getWidth() - 1;
+            }
+            if (y < 0) {
+                y = 0;
+            } else if (y > bitmap.getHeight() - 1) {
+                y = bitmap.getHeight() - 1;
+            }
             int touchedRGB = bitmap.getPixel(x, y);
             int userR = Color.red(touchedRGB);
-            int userG = Color.blue(touchedRGB);
-            int userB = Color.green(touchedRGB);
-            TextView userColourTextBox = findViewById(R.id.userColourTextBox);
-            TextView userColourSampleBox = findViewById(R.id.userColourSampleBox);
+            int userG = Color.green(touchedRGB);
+            int userB = Color.blue(touchedRGB);
+            TextView colourTextBox = findViewById(R.id.userColourTextBox);
+            TextView colourSampleBox = findViewById(R.id.userColourSampleBox);
             String colourBoxString = "R = " + userR + "\nG = " + userG + "\nB = " + userB;
-            userColourTextBox.setText(colourBoxString);
-            userColourSampleBox.setBackgroundColor(Color.rgb(userR, userG, userB));
+            colourTextBox.setText(colourBoxString);
+            colourSampleBox.setBackgroundColor(Color.rgb(userR, userG, userB));
             return true;
         }
     };
