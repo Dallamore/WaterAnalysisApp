@@ -1,9 +1,11 @@
 package p15188966.wateranalysisapp;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -50,42 +52,58 @@ public class PastReadingsActivity extends AppCompatActivity {
 //    public static final String JSON_STRING="{\"Readings\":[{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"22.02.1997\",\"red\":345,\"green\":769,\"blue\":246},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70}]}\n";
 
     private void jsonDecoder(String jsonString) {
-        TextView textView1 = findViewById(R.id.pastReadingsContentTextView);
+//        TextView textView1 = findViewById(R.id.pastReadingsContentTextView);
         try {
             JSONObject data = new JSONObject(jsonString);
             JSONArray jRay = data.getJSONArray("Readings");
-//            textView1.setText(jsonString + "\n\n" + jRay.length());
-            textView1.setText("");
+
             for (int i = 0; i < jRay.length(); i++) {
                 String date = jRay.getJSONObject(i).getString("Date");
                 int rValue = jRay.getJSONObject(i).getInt("Red");
                 int gValue = jRay.getJSONObject(i).getInt("Green");
                 int bValue = jRay.getJSONObject(i).getInt("Blue");
 
+                int bgColour;
+                if(i % 2 == 0){
+                    bgColour = Color.rgb(245,245,245);
+                }
+                else bgColour = Color.WHITE;
+
                 addToScrollView("Date: " + date + "\n" +
                         "Red: " + rValue + "\n" +
                         "Green: " + gValue + "\n" +
-                        "Blue: " + bValue);
-
-//                String tempString = textView1.getText() + "Date: " + date + "\n" +
-//                        "Red: " + rValue + "\n" +
-//                        "Green: " + gValue + "\n" +
-//                        "Blue: " + bValue + "\n\n";
-//                textView1.setText(tempString);
+                        "Blue: " + bValue,
+                        rValue, gValue, bValue, bgColour);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void addToScrollView(String data){
-        LinearLayout ll = findViewById(R.id.scrollViewLinearLayout);
+    private void addToScrollView(String data, int red, int green, int blue, int bgColour){
 
-        TextView tex = new TextView(this);
-        tex.setText(data);
-        tex.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT));
-        ll.addView(tex);
+        TableLayout tableLayout = findViewById(R.id.pastTableLayout);
+
+        TableRow tableRow = new TableRow(this);
+        tableRow.setBackgroundColor(bgColour);
+        tableRow.setLayoutParams(new TableLayout.LayoutParams(
+                TableLayout.LayoutParams.MATCH_PARENT,
+                TableLayout.LayoutParams.MATCH_PARENT));
+
+        TextView resultsText = new TextView(this);
+        resultsText.setText(data);
+        resultsText.setPadding(5, 5, 400, 5);
+        tableRow.addView(resultsText);
+
+        TextView resultsColour = new TextView(this);
+        resultsColour.setBackgroundColor(Color.rgb(red, green, blue));
+        resultsColour.setPadding(5, 5, 50, 150);
+        tableRow.addView(resultsColour);
+
+        tableLayout.addView(tableRow, new TableLayout.LayoutParams(
+                TableLayout.LayoutParams.MATCH_PARENT,
+                TableLayout.LayoutParams.MATCH_PARENT));
+
+
     }
 }
