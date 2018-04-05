@@ -211,7 +211,7 @@ public class ImageTouchActivity extends AppCompatActivity {
     private void calculatePPM() {
         TextView ppmText = findViewById(R.id.nitratePPMText);
         TextView ppmColour = findViewById(R.id.nitratePPMColour);
-        ppmText.setText("Calculate Nitrate PPM");
+        ppmText.setText(R.string.calcNitratePPM);
         ppmColour.setBackgroundColor(Color.rgb(redValue,greenValue,blueValue));
     }
 

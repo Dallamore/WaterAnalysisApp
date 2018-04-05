@@ -3,6 +3,7 @@ package p15188966.wateranalysisapp;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -60,14 +61,31 @@ public class PastReadingsActivity extends AppCompatActivity {
                 int rValue = jRay.getJSONObject(i).getInt("Red");
                 int gValue = jRay.getJSONObject(i).getInt("Green");
                 int bValue = jRay.getJSONObject(i).getInt("Blue");
-                String tempString = textView1.getText() + "Date: " + date + "\n" +
+
+                addToScrollView("Date: " + date + "\n" +
                         "Red: " + rValue + "\n" +
                         "Green: " + gValue + "\n" +
-                        "Blue: " + bValue + "\n\n";
-                textView1.setText(tempString);
+                        "Blue: " + bValue);
+
+//                String tempString = textView1.getText() + "Date: " + date + "\n" +
+//                        "Red: " + rValue + "\n" +
+//                        "Green: " + gValue + "\n" +
+//                        "Blue: " + bValue + "\n\n";
+//                textView1.setText(tempString);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void addToScrollView(String data){
+        LinearLayout ll = findViewById(R.id.scrollViewLinearLayout);
+
+        TextView tex = new TextView(this);
+        tex.setText(data);
+        tex.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT));
+        ll.addView(tex);
     }
 }
