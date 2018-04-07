@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/capturePhotoImageView"
         android:layout_width="313dp"
-        android:layout_height="560dp"
+        android:layout_height="518dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:contentDescription="@string/app_name"
@@ -20,19 +20,17 @@
         android:id="@+id/colourSampleBox"
         android:layout_width="15dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="28dp"
         android:layout_marginTop="4dp"
         app:layout_constraintBottom_toTopOf="@+id/newPhotoButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/colourTextBox"
         android:layout_width="87dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:background="#a4000000"
         android:backgroundTint="@android:color/background_dark"
@@ -46,25 +44,25 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/newPhotoButton"
         app:layout_constraintStart_toEndOf="@+id/colourSampleBox"
-        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/userColourSampleBox"
         android:layout_width="15dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="4dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginTop="4dp"
         app:layout_constraintBottom_toTopOf="@+id/analyseResultsButton"
         app:layout_constraintEnd_toStartOf="@+id/userColourTextBox"
-        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/userColourTextBox"
         android:layout_width="87dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="4dp"
         android:background="#a4000000"
         android:backgroundTint="@android:color/background_dark"
@@ -78,29 +76,29 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/analyseResultsButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView"
+        app:layout_constraintVertical_bias="1.0" />
 
 
     <TextView
         android:id="@+id/nitratePPMColour"
         android:layout_width="15dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="4dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         app:layout_constraintBottom_toTopOf="@+id/newPhotoButton"
         app:layout_constraintEnd_toStartOf="@+id/nitratePPMText"
-        app:layout_constraintHorizontal_bias="0.764"
+        app:layout_constraintHorizontal_bias="0.777"
         app:layout_constraintStart_toEndOf="@+id/colourTextBox"
-        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/nitratePPMText"
         android:layout_width="87dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginTop="4dp"
         android:background="#a4000000"
         android:backgroundTint="@android:color/background_dark"
@@ -114,13 +112,13 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/newPhotoButton"
         app:layout_constraintEnd_toStartOf="@+id/userColourSampleBox"
-        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/analyseResultsButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="16dp"
         android:layout_marginEnd="140dp"
         android:background="@drawable/ic_action_save"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -130,7 +128,6 @@
         android:id="@+id/newPhotoButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="16dp"
         android:layout_marginStart="140dp"
         android:background="@drawable/ic_action_camera"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -138,73 +135,73 @@
 
     <ImageView
         android:id="@+id/slideGradientImageView"
-        android:layout_width="24dp"
-        android:layout_height="560dp"
+        android:layout_width="20dp"
+        android:layout_height="518dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:contentDescription="slider"
-        android:src="@drawable/slider_gradient"
+        android:background="@drawable/slider_gradient"
+        android:contentDescription="@string/slider"
+        app:layout_constraintBottom_toBottomOf="@+id/capturePhotoImageView"
         app:layout_constraintStart_toEndOf="@+id/capturePhotoImageView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/capturePhotoImageView" />
 
-    <TextView
-        android:id="@+id/textViewZero"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/zero"
-        app:layout_constraintStart_toEndOf="@+id/slideGradientImageView"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textViewTwenty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="93dp"
-        android:text="@string/twenty"
+    <LinearLayout
+        android:layout_width="82dp"
+        android:layout_height="518dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/slideGradientImageView"
         app:layout_constraintStart_toEndOf="@+id/slideGradientImageView"
-        app:layout_constraintTop_toBottomOf="@+id/textViewZero" />
+        app:layout_constraintTop_toTopOf="@+id/slideGradientImageView">
 
-    <TextView
-        android:id="@+id/textViewFourty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="93dp"
-        android:text="@string/fourty"
-        app:layout_constraintStart_toEndOf="@+id/slideGradientImageView"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTwenty" />
+        <TextView
+            android:id="@+id/textViewZero"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/zero" />
 
-    <TextView
-        android:id="@+id/textViewEighty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="93dp"
-        android:text="@string/eighty"
-        app:layout_constraintStart_toEndOf="@+id/slideGradientImageView"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFourty" />
+        <TextView
+            android:id="@+id/textViewTwenty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/twenty" />
 
-    <TextView
-        android:id="@+id/textViewOneSixty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="93dp"
-        android:text="@string/oneSixty"
-        app:layout_constraintStart_toEndOf="@+id/slideGradientImageView"
-        app:layout_constraintTop_toBottomOf="@+id/textViewEighty" />
+        <TextView
+            android:id="@+id/textViewFourty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/fourty" />
 
-    <TextView
-        android:id="@+id/textViewTwoHundred"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="76dp"
-        android:text="@string/twoHundred"
-        app:layout_constraintStart_toEndOf="@+id/slideGradientImageView"
-        app:layout_constraintTop_toBottomOf="@+id/textViewOneSixty" />
+        <TextView
+            android:id="@+id/textViewEighty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/eighty" />
+
+        <TextView
+            android:id="@+id/textViewOneSixty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/oneSixty" />
+
+        <TextView
+            android:id="@+id/textViewTwoHundred"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/twoHundred" />
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

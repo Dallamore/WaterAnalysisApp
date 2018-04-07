@@ -52,7 +52,6 @@ public class PastReadingsActivity extends AppCompatActivity {
 //    public static final String JSON_STRING="{\"Readings\":[{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"22.02.1997\",\"red\":345,\"green\":769,\"blue\":246},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70}]}\n";
 
     private void jsonDecoder(String jsonString) {
-//        TextView textView1 = findViewById(R.id.pastReadingsContentTextView);
         try {
             JSONObject data = new JSONObject(jsonString);
             JSONArray jRay = data.getJSONArray("Readings");
@@ -62,7 +61,6 @@ public class PastReadingsActivity extends AppCompatActivity {
                 int rValue = jRay.getJSONObject(i).getInt("Red");
                 int gValue = jRay.getJSONObject(i).getInt("Green");
                 int bValue = jRay.getJSONObject(i).getInt("Blue");
-
                 int bgColour;
                 if(i % 2 == 0){
                     bgColour = Color.rgb(245,245,245);

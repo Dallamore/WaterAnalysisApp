@@ -20,4 +20,5 @@
     <string name="twoHundred">200</string>
 
     <string name="calcNitratePPM">Nitrate PPM:</string>
+    <string name="slider">slider</string>
 </resources>

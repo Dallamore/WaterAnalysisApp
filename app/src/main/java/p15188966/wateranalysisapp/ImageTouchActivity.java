@@ -8,10 +8,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,7 +21,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.media.ExifInterface;
-import android.support.v13.app.ActivityCompat;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -218,6 +220,21 @@ public class ImageTouchActivity extends AppCompatActivity {
     ImageView.OnTouchListener userNitrateTouchListener = new ImageView.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
+
+            GradientDrawable gd = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,new int[] {Color.parseColor("#ffDBC6AA"), Color.parseColor("#ffC4715F")});
+            gd.setGradientType(GradientDrawable.RECTANGLE);
+
+            Bitmap bitmap = Bitmap.createBitmap(
+                    findViewById(R.id.slideGradientImageView).getWidth(),
+                    findViewById(R.id.slideGradientImageView).getHeight(),
+                    Bitmap.Config.ARGB_8888);
+            Canvas canvas =  new Canvas(bitmap);
+            gd.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            gd.draw(canvas);
+            // bitmap now contains a bitmap of the gradient drawable
+
+
             float eventX = event.getX();
             float eventY = event.getY();
             float[] eventXY = new float[]{eventX, eventY};
@@ -226,8 +243,7 @@ public class ImageTouchActivity extends AppCompatActivity {
             invertMatrix.mapPoints(eventXY);
             int x = (int) eventXY[0];
             int y = (int) eventXY[1];
-            Drawable imgDrawable = ((ImageView) view).getDrawable();
-            Bitmap bitmap = ((BitmapDrawable) imgDrawable).getBitmap();
+
             //Limit x, y range within bitmap
             if (x < 0) {
                 x = 0;
