@@ -22,7 +22,7 @@ public class PastReadingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_past_readings);
+        setContentView(R.layout.pastreadings);
         readFromFile();
     }
 
@@ -79,7 +79,6 @@ public class PastReadingsActivity extends AppCompatActivity {
     }
 
     private void addToScrollView(String data, int red, int green, int blue, int bgColour){
-
         TableLayout tableLayout = findViewById(R.id.pastTableLayout);
 
         TableRow tableRow = new TableRow(this);
@@ -101,7 +100,5 @@ public class PastReadingsActivity extends AppCompatActivity {
         tableLayout.addView(tableRow, new TableLayout.LayoutParams(
                 TableLayout.LayoutParams.MATCH_PARENT,
                 TableLayout.LayoutParams.MATCH_PARENT));
-
-
     }
 }

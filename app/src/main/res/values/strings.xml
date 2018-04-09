@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Water Analysis</string>
     <string name="btnCapture">Capture Photo</string>
-    <string name="camera_permission_denied">Camera permission request was denied.</string>
+    <string name="camera_permission_denied">Camera permission request denied.</string>
     <string name="LogoImageView">Logo</string>
     <string name="pastReadingsButton">Past Readings</string>
     <string name="notReadyYet">Not implemented yet</string>
