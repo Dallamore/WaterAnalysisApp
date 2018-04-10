@@ -4,15 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="p15188966.wateranalysisapp.PastReadingsActivity">
+    tools:context="p15188966.wateranalysisapp.PastReadingsActivity"
+    tools:layout_editor_absoluteY="25dp">
 
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="0dp"
-        android:layout_height="581dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="24dp"
+        android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:scrollbarStyle="insideOverlay"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -30,8 +28,7 @@
                 android:id="@+id/firstTableRow"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center">
-            </TableRow>
+                android:gravity="center"></TableRow>
         </TableLayout>
     </ScrollView>
 

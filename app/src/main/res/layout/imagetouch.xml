@@ -8,151 +8,66 @@
 
     <ImageView
         android:id="@+id/capturePhotoImageView"
-        android:layout_width="313dp"
-        android:layout_height="518dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:contentDescription="@string/app_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/colourSampleBox"
-        android:layout_width="15dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/newPhotoButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        android:id="@+id/colourTextBox"
-        android:layout_width="87dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="4dp"
-        android:background="#a4000000"
-        android:backgroundTint="@android:color/background_dark"
-        android:shadowColor="@android:color/black"
-        android:shadowDx="0"
-        android:shadowDy="0"
-        android:shadowRadius="7"
-        android:singleLine="false"
-        android:textAlignment="center"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/newPhotoButton"
-        app:layout_constraintStart_toEndOf="@+id/colourSampleBox"
-        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        android:id="@+id/userColourSampleBox"
-        android:layout_width="15dp"
-        android:layout_height="50dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/analyseResultsButton"
-        app:layout_constraintEnd_toStartOf="@+id/userColourTextBox"
-        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        android:id="@+id/userColourTextBox"
-        android:layout_width="87dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="4dp"
-        android:background="#a4000000"
-        android:backgroundTint="@android:color/background_dark"
-        android:shadowColor="@android:color/black"
-        android:shadowDx="0"
-        android:shadowDy="0"
-        android:shadowRadius="7"
-        android:singleLine="false"
-        android:textAlignment="center"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/analyseResultsButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView"
-        app:layout_constraintVertical_bias="1.0" />
-
-
-    <TextView
-        android:id="@+id/nitratePPMColour"
-        android:layout_width="15dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="4dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/newPhotoButton"
-        app:layout_constraintEnd_toStartOf="@+id/nitratePPMText"
-        app:layout_constraintHorizontal_bias="0.777"
-        app:layout_constraintStart_toEndOf="@+id/colourTextBox"
-        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView"
-        app:layout_constraintVertical_bias="1.0" />
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/app_name"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toStartOf="@+id/slideGradientImageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.719" />
 
-    <TextView
-        android:id="@+id/nitratePPMText"
-        android:layout_width="87dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="4dp"
-        android:background="#a4000000"
-        android:backgroundTint="@android:color/background_dark"
-        android:shadowColor="@android:color/black"
-        android:shadowDx="0"
-        android:shadowDy="0"
-        android:shadowRadius="7"
-        android:singleLine="false"
-        android:textAlignment="center"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/newPhotoButton"
-        app:layout_constraintEnd_toStartOf="@+id/userColourSampleBox"
-        app:layout_constraintTop_toBottomOf="@+id/capturePhotoImageView"
-        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/analyseResultsButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginEnd="140dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/ic_action_save"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.66"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/newPhotoButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="140dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/ic_action_camera"
+        android:textAlignment="viewStart"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.33"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/slideGradientImageView"
         android:layout_width="20dp"
-        android:layout_height="518dp"
-        android:layout_marginStart="16dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/slider_gradient"
         android:contentDescription="@string/slider"
-        app:layout_constraintBottom_toBottomOf="@+id/capturePhotoImageView"
-        app:layout_constraintStart_toEndOf="@+id/capturePhotoImageView"
-        app:layout_constraintTop_toTopOf="@+id/capturePhotoImageView" />
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <LinearLayout
-        android:layout_width="82dp"
-        android:layout_height="518dp"
+        android:id="@+id/linearLayout"
+        android:layout_width="30dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@+id/slideGradientImageView"
-        app:layout_constraintStart_toEndOf="@+id/slideGradientImageView"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/slideGradientImageView">
 
         <TextView
@@ -203,5 +118,93 @@
             android:gravity="center_vertical"
             android:text="@string/twoHundred" />
     </LinearLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="367dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/newPhotoButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/colourSampleBox"
+            android:layout_width="15dp"
+            android:layout_height="50dp"
+            app:layout_constraintEnd_toStartOf="@+id/colourTextBox"
+            app:layout_constraintVertical_bias="0.48" />
+
+        <TextView
+            android:id="@+id/colourTextBox"
+            android:layout_width="87dp"
+            android:layout_height="50dp"
+            android:background="#a4000000"
+            android:backgroundTint="@android:color/background_dark"
+            android:shadowColor="@android:color/black"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="7"
+            android:singleLine="false"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.13"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/nitratePPMColour"
+            android:layout_width="15dp"
+            android:layout_height="50dp"
+            app:layout_constraintEnd_toStartOf="@+id/nitratePPMText"
+            app:layout_constraintVertical_bias="0.48" />
+
+        <TextView
+            android:id="@+id/userColourSampleBox"
+            android:layout_width="15dp"
+            android:layout_height="50dp"
+            app:layout_constraintEnd_toStartOf="@+id/userColourTextBox"
+            app:layout_constraintVertical_bias="0.48" />
+
+        <TextView
+            android:id="@+id/nitratePPMText"
+            android:layout_width="87dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="#a4000000"
+            android:backgroundTint="@android:color/background_dark"
+            android:shadowColor="@android:color/black"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="7"
+            android:singleLine="false"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.52"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/userColourTextBox"
+            android:layout_width="87dp"
+            android:layout_height="50dp"
+            android:background="#a4000000"
+            android:backgroundTint="@android:color/background_dark"
+            android:shadowColor="@android:color/black"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="7"
+            android:singleLine="false"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.89"
+            app:layout_constraintStart_toStartOf="parent" />
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>
