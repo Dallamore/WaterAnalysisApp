@@ -89,12 +89,12 @@ public class PastReadingsActivity extends AppCompatActivity {
 
         TextView resultsText = new TextView(this);
         resultsText.setText(data);
-        resultsText.setPadding(5, 5, 400, 5);
+//        resultsText.setPadding(5, 5, 400, 5);
         tableRow.addView(resultsText);
 
         TextView resultsColour = new TextView(this);
         resultsColour.setBackgroundColor(Color.rgb(red, green, blue));
-        resultsColour.setPadding(5, 5, 50, 150);
+//        resultsColour.setPadding(5, 5, 50, 150);
         tableRow.addView(resultsColour);
 
         tableLayout.addView(tableRow, new TableLayout.LayoutParams(
