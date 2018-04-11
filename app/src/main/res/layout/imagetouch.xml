@@ -50,8 +50,7 @@
         android:layout_width="20dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/slider_gradient"
         android:contentDescription="@string/slider"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
@@ -156,13 +155,6 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/nitratePPMColour"
-            android:layout_width="15dp"
-            android:layout_height="50dp"
-            app:layout_constraintEnd_toStartOf="@+id/nitratePPMText"
-            app:layout_constraintVertical_bias="0.48" />
-
-        <TextView
             android:id="@+id/userColourSampleBox"
             android:layout_width="15dp"
             android:layout_height="50dp"
@@ -173,7 +165,6 @@
             android:id="@+id/nitratePPMText"
             android:layout_width="87dp"
             android:layout_height="50dp"
-            android:layout_marginTop="8dp"
             android:background="#a4000000"
             android:backgroundTint="@android:color/background_dark"
             android:shadowColor="@android:color/black"
@@ -185,7 +176,7 @@
             android:textColor="@android:color/white"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.52"
+            app:layout_constraintHorizontal_bias="0.49"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView

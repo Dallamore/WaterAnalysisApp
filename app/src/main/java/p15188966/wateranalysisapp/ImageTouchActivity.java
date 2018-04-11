@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.util.Date;
 
 public class ImageTouchActivity extends AppCompatActivity {
@@ -315,9 +316,13 @@ public class ImageTouchActivity extends AppCompatActivity {
 
     private void calculatePPM() {
         TextView ppmText = findViewById(R.id.nitratePPMText);
-        TextView ppmColour = findViewById(R.id.nitratePPMColour);
-        ppmText.setText(R.string.calcNitratePPM);
-        ppmColour.setBackgroundColor(Color.rgb(redValue,greenValue,blueValue));
+        double nitratePPM = ((greenValue-135.5)/-0.29375);
+        DecimalFormat df = new DecimalFormat("#.##");
+        nitratePPM = Double.valueOf(df.format(nitratePPM));
+        String titleText = this.getString(R.string.nitrateTitle);
+        String fullText = titleText + nitratePPM;
+
+        ppmText.setText(fullText);
     }
 
 //    ImageView.OnTouchListener userNitrateTouchListener = new ImageView.OnTouchListener() {
