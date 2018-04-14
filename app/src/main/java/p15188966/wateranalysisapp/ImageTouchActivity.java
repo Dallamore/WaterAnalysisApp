@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -92,6 +93,9 @@ public class ImageTouchActivity extends AppCompatActivity {
     Button.OnClickListener analyseResultsButtonListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
+            EditText et = findViewById(R.id.userColourTextBox);
+            userNitrate = Integer.parseInt(et.getText().toString());
+
             if (isFilePresent(getApplicationContext())) {
                 readFromFile();
             } else {
@@ -324,10 +328,6 @@ public class ImageTouchActivity extends AppCompatActivity {
         String fullText = titleText + "\n" + nitratePPM;
         ppmText.setText(fullText);
         appNitrate = nitratePPM;
-
-        TextView uCBox = findViewById(R.id.userColourTextBox);
-        String value = uCBox.getText().toString();
-        userNitrate = Integer.parseInt(value);
     }
 
     public boolean isFilePresent(Context context) {

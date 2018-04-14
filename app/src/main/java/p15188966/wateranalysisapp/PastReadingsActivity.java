@@ -76,7 +76,7 @@ public class PastReadingsActivity extends AppCompatActivity {
                         "Red: " + rValue + "\n" +
                         "Green: " + gValue + "\n" +
                         "Blue: " + bValue + "\n" +
-                        "Nitrate: " + appNitrate + "\n" +
+                        "App Nitrate: " + appNitrate + "\n" +
                         "User Nitrate: " + userNitrate,
                         rValue, gValue, bValue, bgColour);
             }
