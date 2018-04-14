@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -40,6 +41,8 @@ public class PastReadingsActivity extends AppCompatActivity {
                 inputStream.close();
                 String ret = stringBuilder.toString();
                 jsonDecoder(ret);
+//                TextView yolo = findViewById(R.id.textView2);
+//                yolo.setText(ret);
             }
         } catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());
@@ -61,6 +64,8 @@ public class PastReadingsActivity extends AppCompatActivity {
                 int rValue = jRay.getJSONObject(i).getInt("Red");
                 int gValue = jRay.getJSONObject(i).getInt("Green");
                 int bValue = jRay.getJSONObject(i).getInt("Blue");
+                double appNitrate = jRay.getJSONObject(i).getDouble("App Nitate");
+                int userNitrate  = jRay.getJSONObject(i).getInt("User Nitrate");
                 int bgColour;
                 if(i % 2 == 0){
                     bgColour = Color.rgb(245,245,245);
@@ -70,7 +75,9 @@ public class PastReadingsActivity extends AppCompatActivity {
                 addToScrollView("Date: " + date + "\n" +
                         "Red: " + rValue + "\n" +
                         "Green: " + gValue + "\n" +
-                        "Blue: " + bValue,
+                        "Blue: " + bValue + "\n" +
+                        "Nitrate: " + appNitrate + "\n" +
+                        "User Nitrate: " + userNitrate,
                         rValue, gValue, bValue, bgColour);
             }
         } catch (Exception e) {
@@ -83,9 +90,9 @@ public class PastReadingsActivity extends AppCompatActivity {
 
         TableRow tableRow = new TableRow(this);
         tableRow.setBackgroundColor(bgColour);
-        tableRow.setLayoutParams(new TableLayout.LayoutParams(
-                TableLayout.LayoutParams.MATCH_PARENT,
-                TableLayout.LayoutParams.MATCH_PARENT));
+//        tableRow.setLayoutParams(new TableLayout.LayoutParams(
+//                TableLayout.LayoutParams.MATCH_PARENT,
+//                TableLayout.LayoutParams.MATCH_PARENT));
 
         TextView resultsText = new TextView(this);
         resultsText.setText(data);
@@ -96,6 +103,8 @@ public class PastReadingsActivity extends AppCompatActivity {
         resultsColour.setBackgroundColor(Color.rgb(red, green, blue));
 //        resultsColour.setPadding(5, 5, 50, 150);
         tableRow.addView(resultsColour);
+
+        tableRow.setGravity(Gravity.CENTER);
 
         tableLayout.addView(tableRow, new TableLayout.LayoutParams(
                 TableLayout.LayoutParams.MATCH_PARENT,

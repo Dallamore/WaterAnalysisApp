@@ -47,7 +47,8 @@ import java.util.Date;
 
 public class ImageTouchActivity extends AppCompatActivity {
     private String mCurrentPhotoPath;
-    private int redValue, greenValue, blueValue;
+    private int redValue, greenValue, blueValue, userNitrate;
+    private double appNitrate;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -320,59 +321,13 @@ public class ImageTouchActivity extends AppCompatActivity {
         DecimalFormat df = new DecimalFormat("#.##");
         nitratePPM = Double.valueOf(df.format(nitratePPM));
         String titleText = this.getString(R.string.nitrateTitle);
-        String fullText = titleText + nitratePPM;
-
+        String fullText = titleText + "\n" + nitratePPM;
         ppmText.setText(fullText);
-    }
+        appNitrate = nitratePPM;
 
-//    ImageView.OnTouchListener userNitrateTouchListener = new ImageView.OnTouchListener() {
-//        @Override
-//        public boolean onTouch(View view, MotionEvent event) {
-//            GradientDrawable gd = new GradientDrawable(
-//                    GradientDrawable.Orientation.TOP_BOTTOM,new int[] {Color.parseColor("#ffDBC6AA"), Color.parseColor("#ffC4715F")});
-//            gd.setGradientType(GradientDrawable.RECTANGLE);
-//
-//            Bitmap bitmap = Bitmap.createBitmap(
-//                    findViewById(R.id.slideGradientImageView).getWidth(),
-//                    findViewById(R.id.slideGradientImageView).getHeight(),
-//                    Bitmap.Config.ARGB_8888);
-//            Canvas canvas =  new Canvas(bitmap);
-//            gd.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-//            gd.draw(canvas);
-//
-//            float eventX = event.getX();
-//            float eventY = event.getY();
-//            float[] eventXY = new float[]{eventX, eventY};
-//            Matrix invertMatrix = new Matrix();
-//            ((ImageView) view).getImageMatrix().invert(invertMatrix);
-//            invertMatrix.mapPoints(eventXY);
-//            int x = (int) eventXY[0];
-//            int y = (int) eventXY[1];
-//
-//            //Limit x, y range within bitmap
-//            if (x < 0) {
-//                x = 0;
-//            } else if (x > bitmap.getWidth() - 1) {
-//                x = bitmap.getWidth() - 1;
-//            }
-//            if (y < 0) {
-//                y = 0;
-//            } else if (y > bitmap.getHeight() - 1) {
-//                y = bitmap.getHeight() - 1;
-//            }
-//            int touchedRGB = bitmap.getPixel(x, y);
-//            int userR = Color.red(touchedRGB);
-//            int userG = Color.green(touchedRGB);
-//            int userB = Color.blue(touchedRGB);
-//
-//            TextView colourTextBox = findViewById(R.id.userColourTextBox);
-//            TextView colourSampleBox = findViewById(R.id.userColourSampleBox);
-//            String colourBoxString = "R = " + userR + "\nG = " + userG + "\nB = " + userB;
-//            colourTextBox.setText(colourBoxString);
-//            colourSampleBox.setBackgroundColor(Color.rgb(userR, userG, userB));
-//            return true;
-//        }
-//    };
+        TextView yolo = findViewById(R.id.userColourTextBox);
+        userNitrate = Integer.valueOf(yolo.getText().toString());
+    }
 
     public boolean isFilePresent(Context context) {
         String path = context.getFilesDir().getAbsolutePath() + "/" + "waa_data.json";
@@ -452,7 +407,7 @@ public class ImageTouchActivity extends AppCompatActivity {
                 outputStreamWriter.close();
                 Toast.makeText(this, R.string.analysisSuccess, Toast.LENGTH_SHORT).show();
             } else {
-                createJsonFile(jsonMaker(redValue, greenValue, blueValue).toString());
+                createJsonFile(jsonMaker(redValue, greenValue, blueValue, appNitrate, userNitrate).toString());
                 Toast.makeText(this, R.string.analysisSuccess, Toast.LENGTH_SHORT).show();
             }
         } catch (IOException e) {
@@ -460,7 +415,7 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     }
 
-    private JSONObject jsonMaker(int red, int green, int blue) {
+    private JSONObject jsonMaker(int red, int green, int blue, double appNitrate, int userNitrate) {
         JSONObject readings = new JSONObject();
         Date date = new Date();
         String stringDate = DateFormat.getDateTimeInstance().format(date);
@@ -469,6 +424,8 @@ public class ImageTouchActivity extends AppCompatActivity {
             readings.put("Red", red);
             readings.put("Green", green);
             readings.put("Blue", blue);
+            readings.put("App Nitate", appNitrate);
+            readings.put("User Nitrate", userNitrate);
         } catch (JSONException e) {
             e.printStackTrace();
         }
