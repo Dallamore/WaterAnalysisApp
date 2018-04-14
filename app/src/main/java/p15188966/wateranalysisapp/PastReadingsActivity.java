@@ -90,18 +90,14 @@ public class PastReadingsActivity extends AppCompatActivity {
 
         TableRow tableRow = new TableRow(this);
         tableRow.setBackgroundColor(bgColour);
-//        tableRow.setLayoutParams(new TableLayout.LayoutParams(
-//                TableLayout.LayoutParams.MATCH_PARENT,
-//                TableLayout.LayoutParams.MATCH_PARENT));
 
         TextView resultsText = new TextView(this);
         resultsText.setText(data);
-//        resultsText.setPadding(5, 5, 400, 5);
         tableRow.addView(resultsText);
 
         TextView resultsColour = new TextView(this);
         resultsColour.setBackgroundColor(Color.rgb(red, green, blue));
-//        resultsColour.setPadding(5, 5, 50, 150);
+        resultsColour.setWidth(20);
         tableRow.addView(resultsColour);
 
         tableRow.setGravity(Gravity.CENTER);

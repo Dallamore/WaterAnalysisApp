@@ -8,7 +8,7 @@
     <string name="notReadyYet">Not implemented yet</string>
     <string name="action_new_capture">New Capture</string>
     <string name="action_save">Analyse</string>
-    <string name="pastBlockText">No Readings Logged</string>
+    <string name="noReadings">No Readings Logged</string>
     <string name="analysisSuccess">Successfully Analysed</string>
     <string name="createdByName">Created by David Dallamore</string>
     <string name="pNum">P15188966</string>
@@ -22,4 +22,6 @@
 
     <string name="nitrateTitle">Nitrate PPM:</string>
     <string name="slider">slider</string>
+    <string name="data">Data</string>
+    <string name="rgbvalue">RGB Value</string>
 </resources>

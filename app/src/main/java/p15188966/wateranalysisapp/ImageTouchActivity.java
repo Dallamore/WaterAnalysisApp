@@ -325,8 +325,9 @@ public class ImageTouchActivity extends AppCompatActivity {
         ppmText.setText(fullText);
         appNitrate = nitratePPM;
 
-        TextView yolo = findViewById(R.id.userColourTextBox);
-        userNitrate = Integer.valueOf(yolo.getText().toString());
+        TextView uCBox = findViewById(R.id.userColourTextBox);
+        String value = uCBox.getText().toString();
+        userNitrate = Integer.parseInt(value);
     }
 
     public boolean isFilePresent(Context context) {
@@ -374,6 +375,8 @@ public class ImageTouchActivity extends AppCompatActivity {
                         currentData.put("Red", redValue);
                         currentData.put("Green", greenValue);
                         currentData.put("Blue", blueValue);
+                        currentData.put("App Nitate", appNitrate);
+                        currentData.put("User Nitrate", userNitrate);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
