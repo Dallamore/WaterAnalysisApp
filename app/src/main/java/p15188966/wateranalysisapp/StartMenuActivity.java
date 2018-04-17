@@ -16,20 +16,17 @@ public class StartMenuActivity extends AppCompatActivity {
         findViewById(R.id.pastButton).setOnClickListener(toPastReadingsOnclickListener);
     }
 
-    Button.OnClickListener toPhotoActivityOnclickListener = new Button.OnClickListener() {
+    private final Button.OnClickListener toPhotoActivityOnclickListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             startActivity(new Intent(StartMenuActivity.this, ImageTouchActivity.class));
         }
     };
 
-    Button.OnClickListener toPastReadingsOnclickListener = new Button.OnClickListener() {
+    private final Button.OnClickListener toPastReadingsOnclickListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             startActivity(new Intent(StartMenuActivity.this, PastReadingsActivity.class));
-//            Toast.makeText(this, R.string.notReadyYet, Toast.LENGTH_SHORT).show();
-
         }
     };
-
 }

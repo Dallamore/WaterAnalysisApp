@@ -41,8 +41,6 @@ public class PastReadingsActivity extends AppCompatActivity {
                 inputStream.close();
                 String ret = stringBuilder.toString();
                 jsonDecoder(ret);
-//                TextView yolo = findViewById(R.id.textView2);
-//                yolo.setText(ret);
             }
         } catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());
@@ -60,32 +58,37 @@ public class PastReadingsActivity extends AppCompatActivity {
             JSONArray jRay = data.getJSONArray("Readings");
 
             for (int i = 0; i < jRay.length(); i++) {
-                String date = jRay.getJSONObject(i).getString("Date");
-                int rValue = jRay.getJSONObject(i).getInt("Red");
-                int gValue = jRay.getJSONObject(i).getInt("Green");
-                int bValue = jRay.getJSONObject(i).getInt("Blue");
-                double appNitrate = jRay.getJSONObject(i).getDouble("App Nitate");
-                int userNitrate  = jRay.getJSONObject(i).getInt("User Nitrate");
-                int bgColour;
-                if(i % 2 == 0){
-                    bgColour = Color.rgb(245,245,245);
-                }
-                else bgColour = Color.WHITE;
 
-                addToScrollView("Date: " + date + "\n" +
-                        "Red: " + rValue + "\n" +
-                        "Green: " + gValue + "\n" +
-                        "Blue: " + bValue + "\n" +
-                        "App Nitrate: " + appNitrate + "\n" +
-                        "User Nitrate: " + userNitrate,
-                        rValue, gValue, bValue, bgColour);
+                Reading singleResult = new Reading(
+                        jRay.getJSONObject(i).getString("Date"),
+                        jRay.getJSONObject(i).getInt("Red"),
+                        jRay.getJSONObject(i).getInt("Green"),
+                        jRay.getJSONObject(i).getInt("Blue"),
+                        jRay.getJSONObject(i).getInt("User Nitrate"),
+                        jRay.getJSONObject(i).getDouble("App Nitate")
+                );
+
+                int bgColour;
+                if (i % 2 == 0) {
+                    bgColour = Color.rgb(245, 245, 245);
+                } else bgColour = Color.WHITE;
+
+                addToScrollView(singleResult, bgColour);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void addToScrollView(String data, int red, int green, int blue, int bgColour){
+    private void addToScrollView(Reading resultItem, int bgColour) {
+        String data =
+                "Date: " + resultItem.getDate() + "\n" +
+                        "Red: " + resultItem.getRed() + "\n" +
+                        "Green: " + resultItem.getGreen() + "\n" +
+                        "Blue: " + resultItem.getBlue() + "\n" +
+                        "App Nitrate: " + resultItem.getAppNitrate() + "\n" +
+                        "User Nitrate: " + resultItem.getUserNitrate();
+
         TableLayout tableLayout = findViewById(R.id.pastTableLayout);
 
         TableRow tableRow = new TableRow(this);
@@ -96,8 +99,7 @@ public class PastReadingsActivity extends AppCompatActivity {
         tableRow.addView(resultsText);
 
         TextView resultsColour = new TextView(this);
-        resultsColour.setBackgroundColor(Color.rgb(red, green, blue));
-        resultsColour.setWidth(20);
+        resultsColour.setBackgroundColor(Color.rgb(resultItem.getRed(), resultItem.getGreen(), resultItem.getBlue()));
         tableRow.addView(resultsColour);
 
         tableRow.setGravity(Gravity.CENTER);

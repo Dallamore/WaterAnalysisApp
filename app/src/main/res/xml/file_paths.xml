@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<paths xmlns:android="http://schemas.android.com/apk/res/android">
+<paths>
     <external-path
         name="my_images"
         path="Android/data/p15188966.wateranalysisapp/files/Pictures"/>
 </paths>
+
+
+
+    <!--path="Android/data/p15188966.wateranalysisapp/files/Pictures"/>-->

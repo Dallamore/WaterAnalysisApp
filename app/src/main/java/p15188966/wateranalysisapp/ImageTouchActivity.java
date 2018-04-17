@@ -48,8 +48,7 @@ import java.util.Date;
 
 public class ImageTouchActivity extends AppCompatActivity {
     private String mCurrentPhotoPath;
-    private int redValue, greenValue, blueValue, userNitrate;
-    private double appNitrate;
+    private final Reading readingItem = new Reading();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +59,6 @@ public class ImageTouchActivity extends AppCompatActivity {
     }
 
     private void setListeners(){
-//        findViewById(R.id.slideGradientImageView).setOnTouchListener(userNitrateTouchListener);
         Button newPhotoButton = findViewById(R.id.newPhotoButton);
         newPhotoButton.setOnClickListener(newCaptureButtonListener);
 
@@ -83,20 +81,20 @@ public class ImageTouchActivity extends AppCompatActivity {
         twoHundredText.setOnClickListener(twoHundredTouch);
     }
 
-    Button.OnClickListener newCaptureButtonListener = new Button.OnClickListener() {
+    private final Button.OnClickListener newCaptureButtonListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             requestCameraPermission();
         }
     };
 
-    Button.OnClickListener analyseResultsButtonListener = new Button.OnClickListener() {
+    private final Button.OnClickListener analyseResultsButtonListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             EditText et = findViewById(R.id.userColourTextBox);
-            userNitrate = Integer.parseInt(et.getText().toString());
+            readingItem.setUserNitrate(Integer.parseInt(et.getText().toString()));
 
-            if (isFilePresent(getApplicationContext())) {
+            if (isJSONFilePresent(getApplicationContext())) {
                 readFromFile();
             } else {
                 writeToFile("");
@@ -104,7 +102,7 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     };
 
-    TextView.OnClickListener zeroTouch = new TextView.OnClickListener(){
+    private final TextView.OnClickListener zeroTouch = new TextView.OnClickListener(){
         @Override
         public  void onClick(View v){
             TextView colourTextBox = findViewById(R.id.userColourTextBox);
@@ -114,7 +112,7 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     };
 
-    TextView.OnClickListener twentyTouch = new TextView.OnClickListener(){
+    private final TextView.OnClickListener twentyTouch = new TextView.OnClickListener(){
         @Override
         public  void onClick(View v){
             TextView colourTextBox = findViewById(R.id.userColourTextBox);
@@ -124,7 +122,7 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     };
 
-    TextView.OnClickListener fourtyTouch = new TextView.OnClickListener(){
+    private final TextView.OnClickListener fourtyTouch = new TextView.OnClickListener(){
         @Override
         public  void onClick(View v){
             TextView colourTextBox = findViewById(R.id.userColourTextBox);
@@ -134,7 +132,7 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     };
 
-    TextView.OnClickListener eightyTouch = new TextView.OnClickListener(){
+    private final TextView.OnClickListener eightyTouch = new TextView.OnClickListener(){
         @Override
         public  void onClick(View v){
             TextView colourTextBox = findViewById(R.id.userColourTextBox);
@@ -144,7 +142,7 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     };
 
-    TextView.OnClickListener oneSixtyTouch = new TextView.OnClickListener(){
+    private final TextView.OnClickListener oneSixtyTouch = new TextView.OnClickListener(){
         @Override
         public  void onClick(View v){
             TextView colourTextBox = findViewById(R.id.userColourTextBox);
@@ -154,7 +152,7 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     };
 
-    TextView.OnClickListener twoHundredTouch = new TextView.OnClickListener(){
+    private final TextView.OnClickListener twoHundredTouch = new TextView.OnClickListener(){
         @Override
         public  void onClick(View v){
             TextView colourTextBox = findViewById(R.id.userColourTextBox);
@@ -269,7 +267,6 @@ public class ImageTouchActivity extends AppCompatActivity {
     }
 
     private File createImageFile() throws IOException {
-        // Create an image file name
         String imageFileName = "JPEG_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
@@ -277,7 +274,7 @@ public class ImageTouchActivity extends AppCompatActivity {
         return image;
     }
 
-    ImageView.OnTouchListener mainViewTouchListener = new ImageView.OnTouchListener() {
+    private final ImageView.OnTouchListener mainViewTouchListener = new ImageView.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
             float eventX = event.getX();
@@ -302,14 +299,18 @@ public class ImageTouchActivity extends AppCompatActivity {
                 y = bitmap.getHeight() - 1;
             }
             int touchedRGB = bitmap.getPixel(x, y);
-            redValue = Color.red(touchedRGB);
-            greenValue = Color.green(touchedRGB);
-            blueValue = Color.blue(touchedRGB);
+
+            Date date = new Date();
+            readingItem.setDate(DateFormat.getDateTimeInstance().format(date));
+            readingItem.setRed(Color.red(touchedRGB));
+            readingItem.setGreen(Color.green(touchedRGB));
+            readingItem.setBlue(Color.blue(touchedRGB));
+
             TextView colourTextBox = findViewById(R.id.colourTextBox);
             TextView colourSampleBox = findViewById(R.id.colourSampleBox);
-            String colourBoxString = "R = " + redValue + "\nG = " + greenValue + "\nB = " + blueValue;
+            String colourBoxString = "R = " + readingItem.getRed() + "\nG = " + readingItem.getGreen() + "\nB = " + readingItem.getBlue();
             colourTextBox.setText(colourBoxString);
-            colourSampleBox.setBackgroundColor(Color.rgb(redValue, greenValue, blueValue));
+            colourSampleBox.setBackgroundColor(Color.rgb(readingItem.getRed(), readingItem.getGreen(), readingItem.getBlue()));
 
             Button analsyeResultsButton = findViewById(R.id.analyseResultsButton);
             analsyeResultsButton.setOnClickListener(analyseResultsButtonListener);
@@ -321,16 +322,16 @@ public class ImageTouchActivity extends AppCompatActivity {
 
     private void calculatePPM() {
         TextView ppmText = findViewById(R.id.nitratePPMText);
-        double nitratePPM = ((greenValue-135.5)/-0.29375);
+        double nitratePPM = ((readingItem.getGreen()-135.5)/-0.29375);
         DecimalFormat df = new DecimalFormat("#.##");
         nitratePPM = Double.valueOf(df.format(nitratePPM));
         String titleText = this.getString(R.string.nitrateTitle);
         String fullText = titleText + "\n" + nitratePPM;
         ppmText.setText(fullText);
-        appNitrate = nitratePPM;
+        readingItem.setAppNitrate(nitratePPM);
     }
 
-    public boolean isFilePresent(Context context) {
+    private boolean isJSONFilePresent(Context context) {
         String path = context.getFilesDir().getAbsolutePath() + "/" + "waa_data.json";
         File file = new File(path);
         return file.exists();
@@ -368,15 +369,13 @@ public class ImageTouchActivity extends AppCompatActivity {
                     data = new JSONObject(ret);
                     jRay = data.getJSONArray("Readings");
                     JSONObject currentData = new JSONObject();
-                    Date date = new Date();
-                    String stringDate = DateFormat.getDateTimeInstance().format(date);
                     try {
-                        currentData.put("Date", stringDate);
-                        currentData.put("Red", redValue);
-                        currentData.put("Green", greenValue);
-                        currentData.put("Blue", blueValue);
-                        currentData.put("App Nitate", appNitrate);
-                        currentData.put("User Nitrate", userNitrate);
+                        currentData.put("Date", readingItem.getDate());
+                        currentData.put("Red", readingItem.getRed());
+                        currentData.put("Green", readingItem.getGreen());
+                        currentData.put("Blue", readingItem.getBlue());
+                        currentData.put("App Nitate", readingItem.getAppNitrate());
+                        currentData.put("User Nitrate", readingItem.getUserNitrate());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -404,42 +403,17 @@ public class ImageTouchActivity extends AppCompatActivity {
 
     private void writeToFile(String jsonData) {
         try {
-            if (isFilePresent(this)) {
+            if (isJSONFilePresent(this)) {
                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.openFileOutput("waa_data.json", Context.MODE_PRIVATE));
                 outputStreamWriter.write(jsonData);
                 outputStreamWriter.close();
                 Toast.makeText(this, R.string.analysisSuccess, Toast.LENGTH_SHORT).show();
             } else {
-                createJsonFile(jsonMaker(redValue, greenValue, blueValue, appNitrate, userNitrate).toString());
+                createJsonFile(readingItem.toJSONString());
                 Toast.makeText(this, R.string.analysisSuccess, Toast.LENGTH_SHORT).show();
             }
         } catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
         }
-    }
-
-    private JSONObject jsonMaker(int red, int green, int blue, double appNitrate, int userNitrate) {
-        JSONObject readings = new JSONObject();
-        Date date = new Date();
-        String stringDate = DateFormat.getDateTimeInstance().format(date);
-        try {
-            readings.put("Date", stringDate);
-            readings.put("Red", red);
-            readings.put("Green", green);
-            readings.put("Blue", blue);
-            readings.put("App Nitate", appNitrate);
-            readings.put("User Nitrate", userNitrate);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.put(readings);
-        JSONObject finalObj = new JSONObject();
-        try {
-            finalObj.put("Readings", jsonArray);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return finalObj;
     }
 }
