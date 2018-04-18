@@ -46,10 +46,26 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.Date;
 
+/**
+ * Uses Intent to take a photo, provides tapping abilitiy to get RGB values and uses to calculate Nitrate values.
+ */
 public class ImageTouchActivity extends AppCompatActivity {
+    /**
+     * Location the photo is saved
+     */
     private String mCurrentPhotoPath;
+    /**
+     * An individual Reading contain RGB values, Date and time, App calculated Nitrate ppm, and user selected Nitrate ppm
+     */
     private final Reading readingItem = new Reading();
 
+    private final String JSONFileName = "waa_data.json";
+
+    /**
+     * Called every time the acitvity is opened, begins by requesting camera permission if needed and setting listeners
+     *
+     * @param savedInstanceState saves instance of activity, can be used to survive orientation change for example
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +74,10 @@ public class ImageTouchActivity extends AppCompatActivity {
         setListeners();
     }
 
-    private void setListeners(){
+    /**
+     * Sets all the activity's listeners if they do not require specific timing
+     */
+    private void setListeners() {
         Button newPhotoButton = findViewById(R.id.newPhotoButton);
         newPhotoButton.setOnClickListener(newCaptureButtonListener);
 
@@ -81,6 +100,9 @@ public class ImageTouchActivity extends AppCompatActivity {
         twoHundredText.setOnClickListener(twoHundredTouch);
     }
 
+    /**
+     * On Click Listener to take a new photo, begins process by requesting camera permission
+     */
     private final Button.OnClickListener newCaptureButtonListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -88,6 +110,10 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * Listener only attached when ImageView contains and image, begins JSON read/write process.
+     * Also sets the User's selected Nitrate value in the Reading item.
+     */
     private final Button.OnClickListener analyseResultsButtonListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -102,9 +128,13 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     };
 
-    private final TextView.OnClickListener zeroTouch = new TextView.OnClickListener(){
+    /**
+     * On Click listener enabling user to select what they believe to be the correct Nitrate value from
+     * the numbers besides the gradient slider in the layout
+     */
+    private final TextView.OnClickListener zeroTouch = new TextView.OnClickListener() {
         @Override
-        public  void onClick(View v){
+        public void onClick(View v) {
             TextView colourTextBox = findViewById(R.id.userColourTextBox);
             TextView colourSampleBox = findViewById(R.id.userColourSampleBox);
             colourTextBox.setText(R.string.zero);
@@ -112,9 +142,13 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     };
 
-    private final TextView.OnClickListener twentyTouch = new TextView.OnClickListener(){
+    /**
+     * On Click listener enabling user to select what they believe to be the correct Nitrate value from
+     * the numbers besides the gradient slider in the layout
+     */
+    private final TextView.OnClickListener twentyTouch = new TextView.OnClickListener() {
         @Override
-        public  void onClick(View v){
+        public void onClick(View v) {
             TextView colourTextBox = findViewById(R.id.userColourTextBox);
             TextView colourSampleBox = findViewById(R.id.userColourSampleBox);
             colourTextBox.setText(R.string.twenty);
@@ -122,9 +156,13 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     };
 
-    private final TextView.OnClickListener fourtyTouch = new TextView.OnClickListener(){
+    /**
+     * On Click listener enabling user to select what they believe to be the correct Nitrate value from
+     * the numbers besides the gradient slider in the layout
+     */
+    private final TextView.OnClickListener fourtyTouch = new TextView.OnClickListener() {
         @Override
-        public  void onClick(View v){
+        public void onClick(View v) {
             TextView colourTextBox = findViewById(R.id.userColourTextBox);
             TextView colourSampleBox = findViewById(R.id.userColourSampleBox);
             colourTextBox.setText(R.string.fourty);
@@ -132,9 +170,13 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     };
 
-    private final TextView.OnClickListener eightyTouch = new TextView.OnClickListener(){
+    /**
+     * On Click listener enabling user to select what they believe to be the correct Nitrate value from
+     * the numbers besides the gradient slider in the layout
+     */
+    private final TextView.OnClickListener eightyTouch = new TextView.OnClickListener() {
         @Override
-        public  void onClick(View v){
+        public void onClick(View v) {
             TextView colourTextBox = findViewById(R.id.userColourTextBox);
             TextView colourSampleBox = findViewById(R.id.userColourSampleBox);
             colourTextBox.setText(R.string.eighty);
@@ -142,9 +184,13 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     };
 
-    private final TextView.OnClickListener oneSixtyTouch = new TextView.OnClickListener(){
+    /**
+     * On Click listener enabling user to select what they believe to be the correct Nitrate value from
+     * the numbers besides the gradient slider in the layout
+     */
+    private final TextView.OnClickListener oneSixtyTouch = new TextView.OnClickListener() {
         @Override
-        public  void onClick(View v){
+        public void onClick(View v) {
             TextView colourTextBox = findViewById(R.id.userColourTextBox);
             TextView colourSampleBox = findViewById(R.id.userColourSampleBox);
             colourTextBox.setText(R.string.oneSixty);
@@ -152,9 +198,13 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     };
 
-    private final TextView.OnClickListener twoHundredTouch = new TextView.OnClickListener(){
+    /**
+     * On Click listener enabling user to select what they believe to be the correct Nitrate value from
+     * the numbers besides the gradient slider in the layout
+     */
+    private final TextView.OnClickListener twoHundredTouch = new TextView.OnClickListener() {
         @Override
-        public  void onClick(View v){
+        public void onClick(View v) {
             TextView colourTextBox = findViewById(R.id.userColourTextBox);
             TextView colourSampleBox = findViewById(R.id.userColourSampleBox);
             colourTextBox.setText(R.string.twoHundred);
@@ -162,10 +212,21 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     };
 
+
+    /**
+     * Requests permission to use the device's camera
+     */
     private void requestCameraPermission() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 0);
     }
 
+    /**
+     * Activated if request camera permission is accepted or denied and deals with accordingly
+     *
+     * @param requestCode  int request code
+     * @param permissions  array permissions requested
+     * @param grantResults array permission granted
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 0) {
@@ -179,6 +240,9 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Only ever called if camera permission has been granted, creates new Intent to use camera.
+     */
     private void startCamera() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -201,6 +265,13 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Activited after picture has been taken successfully
+     *
+     * @param requestCode request code
+     * @param resultCode  result code
+     * @param data        photo itself
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -211,6 +282,9 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Used if photo taken successfully, scales the image according to the ImageView's dimensions on the devices screen
+     */
     private void scaleAndSetPic() {
         ImageView mImageView = findViewById(R.id.capturePhotoImageView);
 
@@ -243,10 +317,18 @@ public class ImageTouchActivity extends AppCompatActivity {
         mImageView.setOnTouchListener(mainViewTouchListener);
     }
 
+    /**
+     * Rotates image to always be portrait in ImageView.
+     * Primarily for use with Samsung Galaxy Phones
+     *
+     * @param bitmap photo data
+     * @return rotated photo
+     */
     private Bitmap rotateImage(Bitmap bitmap) {
         ExifInterface exifInterface;
         int orientation = 0;
         try {
+            //retrieves photo
             exifInterface = new ExifInterface(mCurrentPhotoPath);
             orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
         } catch (IOException e) {
@@ -263,9 +345,16 @@ public class ImageTouchActivity extends AppCompatActivity {
             default:
                 break;
         }
+        //creates new Bitmap image with new width, height, and rotated matrix data
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
+    /**
+     * Creates a blank file for image to populate, created at the photopath variable's location
+     *
+     * @return Blank file for an image
+     * @throws IOException Incase a temporary file cannot be created
+     */
     private File createImageFile() throws IOException {
         String imageFileName = "JPEG_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -274,6 +363,10 @@ public class ImageTouchActivity extends AppCompatActivity {
         return image;
     }
 
+    /**
+     * OnTouch Listener, when users touches the image, the RGB values from the touched Pixel are calculated
+     * account for the image's scale on the ImageView.
+     */
     private final ImageView.OnTouchListener mainViewTouchListener = new ImageView.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
@@ -299,30 +392,41 @@ public class ImageTouchActivity extends AppCompatActivity {
                 y = bitmap.getHeight() - 1;
             }
             int touchedRGB = bitmap.getPixel(x, y);
-
-            Date date = new Date();
-            readingItem.setDate(DateFormat.getDateTimeInstance().format(date));
-            readingItem.setRed(Color.red(touchedRGB));
-            readingItem.setGreen(Color.green(touchedRGB));
-            readingItem.setBlue(Color.blue(touchedRGB));
-
-            TextView colourTextBox = findViewById(R.id.colourTextBox);
-            TextView colourSampleBox = findViewById(R.id.colourSampleBox);
-            String colourBoxString = "R = " + readingItem.getRed() + "\nG = " + readingItem.getGreen() + "\nB = " + readingItem.getBlue();
-            colourTextBox.setText(colourBoxString);
-            colourSampleBox.setBackgroundColor(Color.rgb(readingItem.getRed(), readingItem.getGreen(), readingItem.getBlue()));
-
-            Button analsyeResultsButton = findViewById(R.id.analyseResultsButton);
-            analsyeResultsButton.setOnClickListener(analyseResultsButtonListener);
-            calculatePPM();
-
+            setReadingObjectAndLayout(touchedRGB);
             return true;
         }
     };
 
+    /**
+     * Uses the RGB values at the touched point to set the Reading Object and populate informative boxes in
+     * the layout.
+     *
+     * @param touchedRGB Int RGB values of touched Image pixels
+     */
+    private void setReadingObjectAndLayout(int touchedRGB) {
+        Date date = new Date();
+        readingItem.setDate(DateFormat.getDateTimeInstance().format(date));
+        readingItem.setRed(Color.red(touchedRGB));
+        readingItem.setGreen(Color.green(touchedRGB));
+        readingItem.setBlue(Color.blue(touchedRGB));
+
+        TextView colourTextBox = findViewById(R.id.colourTextBox);
+        TextView colourSampleBox = findViewById(R.id.colourSampleBox);
+        String colourBoxString = "R = " + readingItem.getRed() + "\nG = " + readingItem.getGreen() + "\nB = " + readingItem.getBlue();
+        colourTextBox.setText(colourBoxString);
+        colourSampleBox.setBackgroundColor(Color.rgb(readingItem.getRed(), readingItem.getGreen(), readingItem.getBlue()));
+
+        Button analsyeResultsButton = findViewById(R.id.analyseResultsButton);
+        analsyeResultsButton.setOnClickListener(analyseResultsButtonListener);
+        calculatePPM();
+    }
+
+    /**
+     * Uses the RGB values and RGB to Nitrate ppm conversion formula to output Nitrate value.
+     */
     private void calculatePPM() {
         TextView ppmText = findViewById(R.id.nitratePPMText);
-        double nitratePPM = ((readingItem.getGreen()-135.5)/-0.29375);
+        double nitratePPM = ((readingItem.getGreen() - 135.5) / -0.29375);
         DecimalFormat df = new DecimalFormat("#.##");
         nitratePPM = Double.valueOf(df.format(nitratePPM));
         String titleText = this.getString(R.string.nitrateTitle);
@@ -331,15 +435,27 @@ public class ImageTouchActivity extends AppCompatActivity {
         readingItem.setAppNitrate(nitratePPM);
     }
 
+    /**
+     * Checks if the JSON already exists
+     *
+     * @param context application context
+     * @return boolean true if file does exist
+     */
     private boolean isJSONFilePresent(Context context) {
-        String path = context.getFilesDir().getAbsolutePath() + "/" + "waa_data.json";
+        String path = context.getFilesDir().getAbsolutePath() + "/" + JSONFileName;
         File file = new File(path);
         return file.exists();
     }
 
+    /**
+     * Called if file does not already exist, uses a FileOutStream to generate file and populate with
+     * JSON file in String form.
+     *
+     * @param jsonString Fully formatted JSON structure in String form
+     */
     private void createJsonFile(String jsonString) {
         try {
-            FileOutputStream fos = openFileOutput("waa_data.json", Context.MODE_PRIVATE);
+            FileOutputStream fos = openFileOutput(JSONFileName, Context.MODE_PRIVATE);
             if (jsonString != null) {
                 fos.write(jsonString.getBytes());
             }
@@ -349,9 +465,12 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Reads the JSON structure from the file, used when adding new item to the file
+     */
     private void readFromFile() {
         try {
-            InputStream inputStream = openFileInput("waa_data.json");
+            InputStream inputStream = openFileInput(JSONFileName);
             if (inputStream != null) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
@@ -401,10 +520,15 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Writes a JSON structure in String form to an external file
+     *
+     * @param jsonData fully formatted JSON structure in string form
+     */
     private void writeToFile(String jsonData) {
         try {
             if (isJSONFilePresent(this)) {
-                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.openFileOutput("waa_data.json", Context.MODE_PRIVATE));
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.openFileOutput(JSONFileName, Context.MODE_PRIVATE));
                 outputStreamWriter.write(jsonData);
                 outputStreamWriter.close();
                 Toast.makeText(this, R.string.analysisSuccess, Toast.LENGTH_SHORT).show();

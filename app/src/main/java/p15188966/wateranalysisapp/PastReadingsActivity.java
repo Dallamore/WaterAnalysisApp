@@ -18,8 +18,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+/**
+ * Controls structure and view of Past Readings Activity, allows app user to view all readings saved
+ * to the external JSON file.
+ */
 public class PastReadingsActivity extends AppCompatActivity {
 
+    /**
+     * Called every time the acitvity is opened, initiates the reading of the JSON file.
+     *
+     * @param savedInstanceState saves instance of activity, can be used to survive orientation change for example
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,10 +36,14 @@ public class PastReadingsActivity extends AppCompatActivity {
         readFromFile();
     }
 
+    /**
+     * Retrives the JSON data from external file using InputStrem and converts to a String.
+     */
     private void readFromFile() {
         try {
             InputStream inputStream = openFileInput("waa_data.json");
             if (inputStream != null) {
+                //Reads all file's contents
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveString;
@@ -39,7 +52,9 @@ public class PastReadingsActivity extends AppCompatActivity {
                     stringBuilder.append(receiveString);
                 }
                 inputStream.close();
+                //Converts all file's contents to a single string
                 String ret = stringBuilder.toString();
+                //passes string to be converts to JSON
                 jsonDecoder(ret);
             }
         } catch (FileNotFoundException e) {
@@ -49,16 +64,20 @@ public class PastReadingsActivity extends AppCompatActivity {
         }
     }
 
-//    public static final String JSON_STRING="{\"Readings\":[{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"22.02.1997\",\"red\":345,\"green\":769,\"blue\":246}]}\n";
-//    public static final String JSON_STRING="{\"Readings\":[{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"22.02.1997\",\"red\":345,\"green\":769,\"blue\":246},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70},{\"date\":\"02.12.1992\",\"red\":50,\"green\":60,\"blue\":70}]}\n";
-
+    /**
+     * Converts parameter String to multiple JSONObjects inside a JSONArray using a for loop.
+     * For loop also adds a background colour value to each item.
+     *
+     * @param jsonString contents of JSON file in String form
+     */
     private void jsonDecoder(String jsonString) {
         try {
+            //Converts to object first, then seperates into array
             JSONObject data = new JSONObject(jsonString);
             JSONArray jRay = data.getJSONArray("Readings");
 
+            //iterates through every item in JSON array
             for (int i = 0; i < jRay.length(); i++) {
-
                 Reading singleResult = new Reading(
                         jRay.getJSONObject(i).getString("Date"),
                         jRay.getJSONObject(i).getInt("Red"),
@@ -67,7 +86,7 @@ public class PastReadingsActivity extends AppCompatActivity {
                         jRay.getJSONObject(i).getInt("User Nitrate"),
                         jRay.getJSONObject(i).getDouble("App Nitate")
                 );
-
+                //background colour makes table look nicer
                 int bgColour;
                 if (i % 2 == 0) {
                     bgColour = Color.rgb(245, 245, 245);
@@ -80,30 +99,36 @@ public class PastReadingsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Receives a reading object and a background colour int. Reading object is converted to formatted and
+     * placed into table row. Reading's RGB values are used to generate colour box which is also added to view.
+     * Background colour is used to increase readability of table by making every other row grey.
+     *
+     * @param resultItem contains String date, ints red, green, blue, and user nitrate, and double app nitrate
+     * @param bgColour   int every second item grey
+     */
     private void addToScrollView(Reading resultItem, int bgColour) {
-        String data =
-                "Date: " + resultItem.getDate() + "\n" +
-                        "Red: " + resultItem.getRed() + "\n" +
-                        "Green: " + resultItem.getGreen() + "\n" +
-                        "Blue: " + resultItem.getBlue() + "\n" +
-                        "App Nitrate: " + resultItem.getAppNitrate() + "\n" +
-                        "User Nitrate: " + resultItem.getUserNitrate();
-
+        //Gets TableLayout object from layout
         TableLayout tableLayout = findViewById(R.id.pastTableLayout);
 
+        //Create new row to add to table
         TableRow tableRow = new TableRow(this);
         tableRow.setBackgroundColor(bgColour);
 
+        //The data contained in the Reading Object added to a TextView, which is added to the table row
         TextView resultsText = new TextView(this);
-        resultsText.setText(data);
+        resultsText.setText(resultItem.toFormattedJSONString());
         tableRow.addView(resultsText);
 
+        //The RGB values are used to make a coloured sample box which is added to the TableRow
         TextView resultsColour = new TextView(this);
         resultsColour.setBackgroundColor(Color.rgb(resultItem.getRed(), resultItem.getGreen(), resultItem.getBlue()));
         tableRow.addView(resultsColour);
 
+        //Gotta put it in the middle nice and neat
         tableRow.setGravity(Gravity.CENTER);
 
+        //TableRow is added to the layout
         tableLayout.addView(tableRow, new TableLayout.LayoutParams(
                 TableLayout.LayoutParams.MATCH_PARENT,
                 TableLayout.LayoutParams.MATCH_PARENT));
