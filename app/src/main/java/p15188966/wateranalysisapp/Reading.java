@@ -171,7 +171,9 @@ class Reading {
      * @return JSON obejct as String
      */
     public String toJSONString() {
+        //Creates object
         JSONObject readings = new JSONObject();
+        //Adds all data to object
         try {
             readings.put("Date", date);
             readings.put("Red", red);
@@ -182,14 +184,17 @@ class Reading {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        //Adds reading to array
         JSONArray jsonArray = new JSONArray();
         jsonArray.put(readings);
+        //Adds array to final object
         JSONObject finalObj = new JSONObject();
         try {
             finalObj.put("Readings", jsonArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        //returns object as a string
         return finalObj.toString();
     }
 

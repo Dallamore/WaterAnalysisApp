@@ -6,6 +6,7 @@
     <string name="pastReadingsButton">Past\nReadings</string>
     <string name="pastReadingsTitle">Past Readings</string>
     <string name="analysisSuccess">Successfully Analysed</string>
+    <string name="analysisFailure">Analysis Failed - cannot write file</string>
     <string name="createdByName">Created by David Dallamore</string>
     <string name="pNum">P15188966</string>
 

@@ -3,7 +3,6 @@ package p15188966.wateranalysisapp;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -11,12 +10,6 @@ import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 /**
  * Controls structure and view of Past Readings Activity, allows app user to view all readings saved
@@ -33,35 +26,9 @@ public class PastReadingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pastreadings);
-        readFromFile();
-    }
-
-    /**
-     * Retrives the JSON data from external file using InputStrem and converts to a String.
-     */
-    private void readFromFile() {
-        try {
-            InputStream inputStream = openFileInput("waa_data.json");
-            if (inputStream != null) {
-                //Reads all file's contents
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString;
-                StringBuilder stringBuilder = new StringBuilder();
-                while ((receiveString = bufferedReader.readLine()) != null) {
-                    stringBuilder.append(receiveString);
-                }
-                inputStream.close();
-                //Converts all file's contents to a single string
-                String ret = stringBuilder.toString();
-                //passes string to be converts to JSON
-                jsonDecoder(ret);
-            }
-        } catch (FileNotFoundException e) {
-            Log.e("login activity", "File not found: " + e.toString());
-        } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
-        }
+        //Begins reading process
+        JSONReadWriteTools jrw = new JSONReadWriteTools(getApplicationContext());
+        jsonDecoder(jrw.fileToString());
     }
 
     /**

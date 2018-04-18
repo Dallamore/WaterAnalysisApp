@@ -20,6 +20,7 @@ public class StartMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.startmenuactivity);
+        //adds listeners
         findViewById(R.id.photoButton).setOnClickListener(toPhotoActivityOnclickListener);
         findViewById(R.id.pastButton).setOnClickListener(toPastReadingsOnclickListener);
     }

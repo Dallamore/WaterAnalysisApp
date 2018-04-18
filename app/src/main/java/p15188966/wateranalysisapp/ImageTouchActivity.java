@@ -3,7 +3,6 @@
 package p15188966.wateranalysisapp;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -21,7 +20,6 @@ import android.support.media.ExifInterface;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -30,18 +28,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -58,8 +46,6 @@ public class ImageTouchActivity extends AppCompatActivity {
      * An individual Reading contain RGB values, Date and time, App calculated Nitrate ppm, and user selected Nitrate ppm
      */
     private final Reading readingItem = new Reading();
-
-    private final String JSONFileName = "waa_data.json";
 
     /**
      * Called every time the acitvity is opened, begins by requesting camera permission if needed and setting listeners
@@ -112,7 +98,7 @@ public class ImageTouchActivity extends AppCompatActivity {
 
     /**
      * Listener only attached when ImageView contains and image, begins JSON read/write process.
-     * Also sets the User's selected Nitrate value in the Reading item.
+     * Also sets the User's selected Nitrate value in the Reading object.
      */
     private final Button.OnClickListener analyseResultsButtonListener = new Button.OnClickListener() {
         @Override
@@ -120,10 +106,13 @@ public class ImageTouchActivity extends AppCompatActivity {
             EditText et = findViewById(R.id.userColourTextBox);
             readingItem.setUserNitrate(Integer.parseInt(et.getText().toString()));
 
-            if (isJSONFilePresent(getApplicationContext())) {
-                readFromFile();
+            //Checks if file exists, if it does start read sequence, if not start creating it
+            JSONReadWriteTools jrw = new JSONReadWriteTools(getApplicationContext(),readingItem);
+            if (jrw.isJSONFilePresent(getApplicationContext())) {
+                jrw.readFromFile();
             } else {
-                writeToFile("");
+                //File created with no content
+                jrw.writeToFile("");
             }
         }
     };
@@ -270,7 +259,7 @@ public class ImageTouchActivity extends AppCompatActivity {
      *
      * @param requestCode request code
      * @param resultCode  result code
-     * @param data        photo itself
+     * @param data        photo data
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -288,30 +277,30 @@ public class ImageTouchActivity extends AppCompatActivity {
     private void scaleAndSetPic() {
         ImageView mImageView = findViewById(R.id.capturePhotoImageView);
 
-        /* Get the size of the ImageView */
+//        Get the size of the ImageView
         int targetW = mImageView.getWidth();
         int targetH = mImageView.getHeight();
 
-        /* Get the size of the image */
+//        Get the size of the image
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
         int photoW = bmOptions.outWidth;
         int photoH = bmOptions.outHeight;
 
-        /* Figure out which way needs to be reduced less */
+//        Figure out which way needs to be reduced less
         int scaleFactor = 1;
         if ((targetW > 0) || (targetH > 0)) {
             scaleFactor = Math.min(photoW / targetW, photoH / targetH);
         }
 
-        /* Set bitmap options to scale the image decode target */
+//        Set bitmap options to scale the image decode target
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
 
-        /* Decode the JPEG file into a Bitmap */
+//        Decode the JPEG file into a Bitmap
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
 
-        /* Associate the Bitmap to the ImageView */
+//        Associate the Bitmap to the ImageView
         Bitmap mPhoto = rotateImage(bitmap);
         mImageView.setImageBitmap(mPhoto);
         mImageView.setOnTouchListener(mainViewTouchListener);
@@ -335,6 +324,7 @@ public class ImageTouchActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         Matrix matrix = new Matrix();
+        //Makes sure image is rotated to portrait
         switch (orientation) {
             case ExifInterface.ORIENTATION_ROTATE_90:
                 matrix.setRotate(90);
@@ -370,6 +360,7 @@ public class ImageTouchActivity extends AppCompatActivity {
     private final ImageView.OnTouchListener mainViewTouchListener = new ImageView.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent event) {
+            //Retrieves touched pixel's coordinates
             float eventX = event.getX();
             float eventY = event.getY();
             float[] eventXY = new float[]{eventX, eventY};
@@ -404,20 +395,24 @@ public class ImageTouchActivity extends AppCompatActivity {
      * @param touchedRGB Int RGB values of touched Image pixels
      */
     private void setReadingObjectAndLayout(int touchedRGB) {
+        //sets Reading object now the information is available
         Date date = new Date();
         readingItem.setDate(DateFormat.getDateTimeInstance().format(date));
         readingItem.setRed(Color.red(touchedRGB));
         readingItem.setGreen(Color.green(touchedRGB));
         readingItem.setBlue(Color.blue(touchedRGB));
 
+        //Sets data to respective places in layout
         TextView colourTextBox = findViewById(R.id.colourTextBox);
         TextView colourSampleBox = findViewById(R.id.colourSampleBox);
         String colourBoxString = "R = " + readingItem.getRed() + "\nG = " + readingItem.getGreen() + "\nB = " + readingItem.getBlue();
         colourTextBox.setText(colourBoxString);
         colourSampleBox.setBackgroundColor(Color.rgb(readingItem.getRed(), readingItem.getGreen(), readingItem.getBlue()));
 
+        //Enables analyse button
         Button analsyeResultsButton = findViewById(R.id.analyseResultsButton);
         analsyeResultsButton.setOnClickListener(analyseResultsButtonListener);
+
         calculatePPM();
     }
 
@@ -426,118 +421,16 @@ public class ImageTouchActivity extends AppCompatActivity {
      */
     private void calculatePPM() {
         TextView ppmText = findViewById(R.id.nitratePPMText);
+        //uses the RGB to Nitrate conversion
         double nitratePPM = ((readingItem.getGreen() - 135.5) / -0.29375);
+        //limits double to two decimal places
         DecimalFormat df = new DecimalFormat("#.##");
         nitratePPM = Double.valueOf(df.format(nitratePPM));
+        //Sets to layout
         String titleText = this.getString(R.string.nitrateTitle);
         String fullText = titleText + "\n" + nitratePPM;
         ppmText.setText(fullText);
+        //sets data in Reading object
         readingItem.setAppNitrate(nitratePPM);
-    }
-
-    /**
-     * Checks if the JSON already exists
-     *
-     * @param context application context
-     * @return boolean true if file does exist
-     */
-    private boolean isJSONFilePresent(Context context) {
-        String path = context.getFilesDir().getAbsolutePath() + "/" + JSONFileName;
-        File file = new File(path);
-        return file.exists();
-    }
-
-    /**
-     * Called if file does not already exist, uses a FileOutStream to generate file and populate with
-     * JSON file in String form.
-     *
-     * @param jsonString Fully formatted JSON structure in String form
-     */
-    private void createJsonFile(String jsonString) {
-        try {
-            FileOutputStream fos = openFileOutput(JSONFileName, Context.MODE_PRIVATE);
-            if (jsonString != null) {
-                fos.write(jsonString.getBytes());
-            }
-            fos.close();
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
-    }
-
-    /**
-     * Reads the JSON structure from the file, used when adding new item to the file
-     */
-    private void readFromFile() {
-        try {
-            InputStream inputStream = openFileInput(JSONFileName);
-            if (inputStream != null) {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString;
-                StringBuilder stringBuilder = new StringBuilder();
-                while ((receiveString = bufferedReader.readLine()) != null) {
-                    stringBuilder.append(receiveString);
-                }
-                inputStream.close();
-                String ret = stringBuilder.toString();
-                JSONObject data;
-                JSONArray jRay;
-                JSONArray finalJray = new JSONArray();
-                try {
-                    data = new JSONObject(ret);
-                    jRay = data.getJSONArray("Readings");
-                    JSONObject currentData = new JSONObject();
-                    try {
-                        currentData.put("Date", readingItem.getDate());
-                        currentData.put("Red", readingItem.getRed());
-                        currentData.put("Green", readingItem.getGreen());
-                        currentData.put("Blue", readingItem.getBlue());
-                        currentData.put("App Nitate", readingItem.getAppNitrate());
-                        currentData.put("User Nitrate", readingItem.getUserNitrate());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    finalJray.put(currentData);
-                    for (int i = 0; i < jRay.length(); i++) {
-                        finalJray.put(jRay.get(i));
-                    }
-                    JSONObject finalObj = new JSONObject();
-                    try {
-                        finalObj.put("Readings", finalJray);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    writeToFile(finalObj.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (FileNotFoundException e) {
-            Log.e("login activity", "File not found: " + e.toString());
-        } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
-        }
-    }
-
-    /**
-     * Writes a JSON structure in String form to an external file
-     *
-     * @param jsonData fully formatted JSON structure in string form
-     */
-    private void writeToFile(String jsonData) {
-        try {
-            if (isJSONFilePresent(this)) {
-                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.openFileOutput(JSONFileName, Context.MODE_PRIVATE));
-                outputStreamWriter.write(jsonData);
-                outputStreamWriter.close();
-                Toast.makeText(this, R.string.analysisSuccess, Toast.LENGTH_SHORT).show();
-            } else {
-                createJsonFile(readingItem.toJSONString());
-                Toast.makeText(this, R.string.analysisSuccess, Toast.LENGTH_SHORT).show();
-            }
-        } catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
     }
 }
