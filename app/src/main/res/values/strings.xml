@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Water Analysis</string>
+    <string name="versionNum">v1.0</string>
     <string name="btnCapture">Capture\nPhoto</string>
     <string name="camera_permission_denied">Camera permission request denied.</string>
     <string name="LogoImageView">Logo</string>
