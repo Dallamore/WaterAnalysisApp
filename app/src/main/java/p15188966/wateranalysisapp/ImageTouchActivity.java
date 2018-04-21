@@ -277,30 +277,29 @@ public class ImageTouchActivity extends AppCompatActivity {
     private void scaleAndSetPic() {
         ImageView mImageView = findViewById(R.id.capturePhotoImageView);
 
-//        Get the size of the ImageView
+        //Get the size of the ImageView
         int targetW = mImageView.getWidth();
         int targetH = mImageView.getHeight();
 
-//        Get the size of the image
+        //Get the size of the image
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
         int photoW = bmOptions.outWidth;
         int photoH = bmOptions.outHeight;
 
-//        Figure out which way needs to be reduced less
+        //Figure out which way needs to be reduced less
         int scaleFactor = 1;
         if ((targetW > 0) || (targetH > 0)) {
             scaleFactor = Math.min(photoW / targetW, photoH / targetH);
         }
 
-//        Set bitmap options to scale the image decode target
-        bmOptions.inJustDecodeBounds = false;
+        //Set bitmap options to scale the image decode target bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
 
-//        Decode the JPEG file into a Bitmap
+        //Decode the JPEG file into a Bitmap
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
 
-//        Associate the Bitmap to the ImageView
+        //Associate the Bitmap to the ImageView
         Bitmap mPhoto = rotateImage(bitmap);
         mImageView.setImageBitmap(mPhoto);
         mImageView.setOnTouchListener(mainViewTouchListener);
