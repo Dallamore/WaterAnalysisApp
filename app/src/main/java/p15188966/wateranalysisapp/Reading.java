@@ -168,6 +168,7 @@ class Reading {
 
     /**
      * Converts object to JSON Object and returns as string ready to write to file
+     *
      * @return JSON obejct as String
      */
     public String toJSONString() {
@@ -200,6 +201,7 @@ class Reading {
 
     /**
      * Converts object to beautifully formatted string ready to face user
+     *
      * @return Beauty format String
      */
     public String toFormattedJSONString() {

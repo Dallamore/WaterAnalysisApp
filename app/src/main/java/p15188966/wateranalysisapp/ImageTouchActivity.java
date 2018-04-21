@@ -107,7 +107,7 @@ public class ImageTouchActivity extends AppCompatActivity {
             readingItem.setUserNitrate(Integer.parseInt(et.getText().toString()));
 
             //Checks if file exists, if it does start read sequence, if not start creating it
-            JSONReadWriteTools jrw = new JSONReadWriteTools(getApplicationContext(),readingItem);
+            JSONReadWriteTools jrw = new JSONReadWriteTools(getApplicationContext(), readingItem);
             if (jrw.isJSONFilePresent(getApplicationContext())) {
                 jrw.readFromFile();
             } else {
@@ -201,7 +201,6 @@ public class ImageTouchActivity extends AppCompatActivity {
         }
     };
 
-
     /**
      * Requests permission to use the device's camera
      */
@@ -283,7 +282,6 @@ public class ImageTouchActivity extends AppCompatActivity {
 
         //Get the size of the image
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
         int photoW = bmOptions.outWidth;
         int photoH = bmOptions.outHeight;
 
@@ -293,11 +291,12 @@ public class ImageTouchActivity extends AppCompatActivity {
             scaleFactor = Math.min(photoW / targetW, photoH / targetH);
         }
 
-        //Set bitmap options to scale the image decode target bmOptions.inJustDecodeBounds = false;
+        //Set bitmap options to scale the image decode target
+        bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
 
         //Decode the JPEG file into a Bitmap
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
 
         //Associate the Bitmap to the ImageView
         Bitmap mPhoto = rotateImage(bitmap);
